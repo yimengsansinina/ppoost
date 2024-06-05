@@ -34,12 +34,9 @@ object AndroidUtils {
     fun phoneH(): Int {
         return BaseApp.mApp!!.resources.displayMetrics.heightPixels
     }
-    fun Context.dp2px(dp: Float): Float {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
-    }
-
-    fun Context.dp2px(dp: Int): Int {
-        return dp2px(dp.toFloat()).toInt()
+    fun dp2px(dp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, BaseApp.mApp!!.resources.displayMetrics)
+            .toInt()
     }
 
 //    fun navDetail(activity: BaseActivity) {

@@ -49,6 +49,14 @@ android {
 }
 
 dependencies {
+    implementation ("com.jaeger.statusbarutil:library:1.5.1") {	//所加的第三方框架
+        exclude (
+        group="com.android.support",
+        module="support-compat")
+        exclude (
+        group="com.android.support",
+        module="support-media-compat")
+    }
     implementation ("com.squareup.okhttp3:logging-interceptor:4.8.1")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0")

@@ -1,6 +1,10 @@
 package com.exp.post.net
+import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
+import com.exp.post.bean.MovieListRequest
+import com.exp.post.bean.MovieListResponse
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -8,9 +12,11 @@ import retrofit2.http.POST
 interface NetApi {
     //    val account = req.getParameter("account")
 //    val password = req.getParameter("password")
-    @FormUrlEncoded
     @POST("homePage")
-    fun homePage(@FieldMap p: Map<String, String>): Call<HomePageResponse>
+    fun homePage(@Body p: HomePageRequest): Call<HomePageResponse>
+
+    @POST("queryMovieList")
+    fun queryMovieList(@Body p: MovieListRequest): Call<MovieListResponse>
 
 //    @FormUrlEncoded
 //    @POST("register")

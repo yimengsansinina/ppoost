@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.bean.HomePageBean
+import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
 import com.exp.post.databinding.FragmentShowBinding
 import retrofit2.Call
@@ -120,11 +121,12 @@ class ShowFragment : Fragment() {
         success: (List<HomePageBean>?, noMore: Boolean) -> Unit,
         fail: (Int) -> Unit
     ) {
-        val map = HashMap<String, String>()
-        map["top_class"] = top_class.toString()
-        map["pg"] = pg.toString()
+//        val map = HashMap<String, String>()
+//        map["top_class"] = top_class.toString()
+//        map["pg"] = pg.toString()
+        val bean = HomePageRequest(top_class.toString(), pg.toString())
         HttpClient.instance.getServer(NetApi::class.java)
-            .homePage(map)
+            .homePage(bean)
             .enqueue(object : Callback<HomePageResponse> {
                 override fun onResponse(
                     call: Call<HomePageResponse>,

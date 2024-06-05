@@ -24,8 +24,8 @@ class ShowAdapter() : BaseMultiItemQuickAdapter<HomePageBean, BaseViewHolder>(),
                val layoutParams = cover.layoutParams
                val with = AndroidUtils.phoneW()-AndroidUtils.phoneH()
                item.entity?.let {
-                   holder.setText(R.id.name, it.name)
-                   Glide.with(context).load(it.coverUrl).into(holder.getView(R.id.cover))
+                   holder.setText(R.id.name, it.playName)
+                   Glide.with(context).load(it.cover).into(holder.getView(R.id.cover))
                }
             }
         }
