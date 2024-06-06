@@ -1,19 +1,25 @@
 package com.exp.post.ui.home
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.ArrayMap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.exp.post.MovieDetailActivity
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.bean.HomePageBean
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
 import com.exp.post.databinding.FragmentShowBinding
+import com.exp.post.tools.AndroidUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,7 +81,9 @@ class ShowFragment : Fragment() {
     }
 
     private val adapter by lazy {
-        ShowAdapter()
+        ShowAdapter{
+            MovieDetailActivity.nav(requireActivity() as AppCompatActivity,it.id)
+        }
     }
 
     private fun initView(loadMore: Boolean,list: List<HomePageBean>?, noMore: Boolean) {
@@ -93,6 +101,44 @@ class ShowFragment : Fragment() {
             }
             binding.recyclerView.layoutManager = layoutManager
             binding.recyclerView.adapter = adapter
+            binding.recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    val position=  parent.getChildLayoutPosition(view)
+                    val itemType = binding.recyclerView.adapter?.getItemViewType(position) ?: 0
+                     if (itemType != 0) {
+
+
+
+                    val gridLayoutManager = parent.layoutManager as GridLayoutManager
+                    val span = gridLayoutManager.spanCount
+                    val pos=  parent.getChildLayoutPosition(view)
+                    val col = pos%span
+                         val i = map[position]?:0
+                         when(i%3){
+                             0->{
+                                 outRect.left=  AndroidUtils.dp2px(15f)
+                                 outRect.right= AndroidUtils.dp2px(15f)/3
+                             }
+                             1->{
+                                 outRect.left= (AndroidUtils.dp2px(15f)*(2/3f)).toInt()
+                                 outRect.right= (AndroidUtils.dp2px(15f)*(2/3f)).toInt()
+                             }
+                             2->{
+                                 outRect.right=  AndroidUtils.dp2px(15f)
+                                 outRect.left= AndroidUtils.dp2px(15f)/3
+                             }
+                         }
+                     }
+
+                }
+            })
+
         }
         if (loadMore){
             adapter.addData(list!!)
@@ -113,7 +159,7 @@ class ShowFragment : Fragment() {
         }
 
     }
-
+private val map =ArrayMap<Int,Int>()
     private val mHandler = Handler(Looper.getMainLooper())
     private fun homePagerT(
         top_class: Int,
@@ -146,14 +192,25 @@ class ShowFragment : Fragment() {
                         return
                     }
                     //
-                    if (body.res == null) {
+                    val res = body.res
+                    if (res == null) {
                         mHandler.post {
                             fail(body.code)
                         }
                         return
                     }
+//                    map.clear()
+                    var flag =0
+                    res.forEachIndexed { index, homePageBean ->
+                        if (homePageBean.type==0) {
+                            flag =0
+                        }else{
+                            map[index]=flag
+                            flag++
+                        }
+                    }
                     mHandler.post {
-                        success(body.res!!, body.res!!.isEmpty())
+                        success(res!!, res!!.isEmpty())
                     }
                 }
 

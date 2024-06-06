@@ -42,11 +42,11 @@ class HomeFragment : Fragment() {
 
         val adapter = FragmentPagerItemAdapter(
             childFragmentManager, FragmentPagerItems.with(activity)
-                .add("title11", ShowFragment::class.java, bundleOf("topC" to 2))
-                .add("title11", ShowFragment::class.java, bundleOf("topC" to 1))
-                .add("title11", ShowFragment::class.java, bundleOf("topC" to 3))
-                .add("title11", ShowFragment::class.java, bundleOf("topC" to 4))
-                .add("title11", ShowFragment::class.java, bundleOf("topC" to 5))
+                .add("电视剧", ShowFragment::class.java, bundleOf("topC" to 2))
+                .add("电影", ShowFragment::class.java, bundleOf("topC" to 1))
+                .add("动漫", ShowFragment::class.java, bundleOf("topC" to 3))
+                .add("综艺", ShowFragment::class.java, bundleOf("topC" to 4))
+                .add("记录片", ShowFragment::class.java, bundleOf("topC" to 5))
                 .create()
         )
 

@@ -2,21 +2,20 @@ package com.exp.post
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.exp.post.R
 import com.exp.post.databinding.ActivityMainBinding
 import com.exp.post.dbs.ObjectBox
-import com.exp.post.dbs.ObjectBox.store
 import com.exp.post.dbs.User
 import com.exp.post.dbs.User_
-import io.objectbox.Box
-import io.objectbox.TxCallback
-import java.util.concurrent.Callable
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -81,6 +80,20 @@ class MainActivity : AppCompatActivity() {
 //                System.out.println("Removed user with name: " + result);
 //            }
 //        }
+
+        navView.setOnItemSelectedListener(object : NavigationBarView.OnItemSelectedListener {
+            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                if (item.itemId==R.id.navigation_dashboard){
+                    MovieListActivity.navMovieListActivity(this@MainActivity)
+                    return false
+                }else{
+                    NavigationUI.onNavDestinationSelected(item, navController)
+                 return true
+                }
+            }
+
+        })
+//        navView.
     }
     companion object{
         const val TAG="MainActivity"

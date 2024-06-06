@@ -1,14 +1,18 @@
 package com.exp.post
 
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.exp.post.adapter.MovieListAdapter
 import com.exp.post.adapter.MovieListContentAdapter
 import com.exp.post.bean.MovieListBean
@@ -18,6 +22,7 @@ import com.exp.post.bean.PageBean
 import com.exp.post.databinding.ActivityMovieListBinding
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
+import com.exp.post.tools.AndroidUtils
 import com.exp.post.ui.home.ShowFragment
 import com.jaeger.library.StatusBarUtil
 import retrofit2.Call
@@ -39,6 +44,10 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     companion object {
+        fun navMovieListActivity(activity: AppCompatActivity) {
+            activity.startActivity(Intent(activity, MovieListActivity::class.java))
+        }
+
         const val TAG = "MovieListActivity"
     }
 
@@ -46,8 +55,7 @@ class MovieListActivity : AppCompatActivity() {
     private var pos2 = 0
     private var pos3 = 0
     private var pos4 = 0
-//    private var topC: String? = null
-    private var topC= "1"
+    private var topC = "1"
     private var movieModle: String? = null
     private var areaModle: String? = null
     private var yearModle: String? = null
@@ -58,9 +66,9 @@ class MovieListActivity : AppCompatActivity() {
             if (id == pos1) {
                 return@MovieListAdapter
             }
-            topC=id.toString()
+            topC = id.toString()
             adapter2.checkPos = 0
-            movieModle=null
+            movieModle = null
             when (id) {
                 0 -> {
                     adapter2.setList(list2_1)
@@ -305,7 +313,7 @@ class MovieListActivity : AppCompatActivity() {
                     if (it.name == "更早") {
                         "2000"
                     } else {
-                      it.name
+                        it.name
                     }
                 }
             }
@@ -326,6 +334,23 @@ class MovieListActivity : AppCompatActivity() {
             val layoutManager = GridLayoutManager(this, 3)
             binding.recyclerView.layoutManager = layoutManager
             binding.recyclerView.adapter = adapter
+            binding.recyclerView.addItemDecoration(object : ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    val gridLayoutManager = parent.layoutManager as GridLayoutManager
+                    val span = gridLayoutManager.spanCount
+                    val pos = parent.getChildLayoutPosition(view)
+                    val col = pos % span
+                    outRect.left = AndroidUtils.dp2px(15f) - col * AndroidUtils.dp2px(15f) / span
+                    outRect.right = (col + 1) * AndroidUtils.dp2px(15f) / span
+                    Log.d(TAG, "getItemOffsets: left=${outRect.left},right=${outRect.right},pos=$pos,col=$col")
+                }
+            })
         }
         if (loadMore) {
             adapter.addData(list!!)
@@ -436,6 +461,10 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        binding.backFl.setOnClickListener {
+            finish()
+
+        }
         adapter.loadMoreModule.setOnLoadMoreListener {
             postNet(true)
         }
@@ -557,8 +586,8 @@ class MovieListActivity : AppCompatActivity() {
         success: (List<PageBean>?, noMore: Boolean) -> Unit,
         fail: (Int) -> Unit
     ) {
-        if (topC=="0"){
-            topC="1"
+        if (topC == "0") {
+            topC = "1"
         }
         Log.d(TAG, "queryMovieList: movieModle=$movieModle")
         val bean = MovieListRequest()

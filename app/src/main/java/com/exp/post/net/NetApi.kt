@@ -1,6 +1,8 @@
 package com.exp.post.net
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
+import com.exp.post.bean.MovieInfoRequest
+import com.exp.post.bean.MovieInfoResponse
 import com.exp.post.bean.MovieListRequest
 import com.exp.post.bean.MovieListResponse
 import retrofit2.Call
@@ -17,6 +19,8 @@ interface NetApi {
 
     @POST("queryMovieList")
     fun queryMovieList(@Body p: MovieListRequest): Call<MovieListResponse>
+    @POST("movieInfo")
+    fun movieInfo(@Body p: MovieInfoRequest): Call<MovieInfoResponse>
 
 //    @FormUrlEncoded
 //    @POST("register")

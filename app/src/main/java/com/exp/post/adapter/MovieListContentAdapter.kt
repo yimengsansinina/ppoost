@@ -18,7 +18,7 @@ class MovieListContentAdapter() :
     override fun convert(holder: BaseViewHolder, item: PageBean) {
         val cover = holder.getView<ImageView>(R.id.cover)
         val layoutParams = cover.layoutParams
-        val w = (AndroidUtils.phoneW() - AndroidUtils.dp2px(64f)) / 3
+        val w = (AndroidUtils.phoneW() - AndroidUtils.dp2px(60f)) / 3
         layoutParams.width = w.toInt()
         layoutParams.height = ((347 / 267f) * w).toInt()
         cover.layoutParams = layoutParams

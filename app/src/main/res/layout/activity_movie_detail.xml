@@ -1,12 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <cn.jzvd.JzvdStd
-        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/jz_video"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="@string/app_name"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/jz_video" />
+
+    <TextView
+        android:text="@string/app_name"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        android:id="@+id/information"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10sp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        app:layout_constraintStart_toStartOf="parent" />
+<View
+    android:layout_marginEnd="10dp"
+    app:layout_constraintBottom_toBottomOf="@id/information"
+    app:layout_constraintTop_toTopOf="@id/information"
+    android:id="@+id/more"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:background="@drawable/ic_launcher_background"
+    android:layout_width="20dp"
+    android:layout_height="20dp"/>
+    <TextView
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@id/more"
+        app:layout_constraintBottom_toBottomOf="@id/information"
+        app:layout_constraintTop_toTopOf="@id/information"
+        android:text="简介"
+        android:id="@+id/desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:singleLine="true" />
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/information"
+        android:id="@+id/handle_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/shear_ll"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="10dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_gravity="center_horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/information"
+                app:layout_constraintTop_toTopOf="@id/information"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/ic_launcher_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:layout_gravity="center_horizontal"
+                android:text="分享"
+                app:layout_constraintTop_toBottomOf="@id/name"
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/download_ll"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_gravity="center_horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/information"
+                app:layout_constraintTop_toTopOf="@id/information"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/ic_launcher_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:layout_gravity="center_horizontal"
+                android:text="下载"
+                app:layout_constraintTop_toBottomOf="@id/name"
+                android:id="@+id/download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/collect_ll"
+            android:paddingEnd="15dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="15dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <View
+                android:layout_gravity="center_horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/information"
+                app:layout_constraintTop_toTopOf="@id/information"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/ic_launcher_background"
+                android:layout_width="25dp"
+                android:layout_height="25dp"/>
+            <TextView
+                android:textSize="12dp"
+                android:layout_gravity="center_horizontal"
+                android:text="收藏"
+                app:layout_constraintTop_toBottomOf="@id/name"
+                android:id="@+id/collect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/actor1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="演员"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/handle_ll" />
+
+    <TextView
+        android:id="@+id/actor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="演员"
+        android:textSize="13dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actor1" />
+    <TextView
+        android:layout_marginTop="10dp"
+        android:id="@+id/exo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="选集"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/actor" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toBottomOf="@id/exo"
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <View
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/exo"
+        app:layout_constraintTop_toTopOf="@id/exo"
+        android:id="@+id/more1"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/ic_launcher_background"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
+    <TextView
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@id/more1"
+        app:layout_constraintBottom_toBottomOf="@id/exo"
+        app:layout_constraintTop_toTopOf="@id/exo"
+        android:text="mark"
+        android:id="@+id/mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:singleLine="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>
