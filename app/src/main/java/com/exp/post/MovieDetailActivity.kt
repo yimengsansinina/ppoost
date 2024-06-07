@@ -5,12 +5,18 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.collection.ArrayMap
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
+import com.exp.post.adapter.RouteAdapter
+import com.exp.post.bean.EpBean
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
 import com.exp.post.bean.MovieListRequest
@@ -71,12 +77,12 @@ class MovieDetailActivity : AppCompatActivity() {
 
         mMovie?.run {
             binding.name.text = playName
-            val info = when(topClass){
-                1->"电影"
-                2->"电视剧"
-                3->"动漫"
-                4->"综艺"
-                else->"纪录片"
+            val info = when (topClass) {
+                1 -> "电影"
+                2 -> "电视剧"
+                3 -> "动漫"
+                4 -> "综艺"
+                else -> "纪录片"
             }
             val sb = StringBuffer(playArea)
             sb
@@ -94,14 +100,73 @@ class MovieDetailActivity : AppCompatActivity() {
             showDesContent()
         }
     }
+
     private fun requestMovie() {
         queryMovieList(mId, {
             mMovie = it
             Log.d(TAG, "requestMovie: mMovie=$mMovie")
             initMovieUI()
+            initRecycler()
         }, {
             //todo
         })
+    }
+
+    //private val map =ArrayMap<Int>
+    private fun initRecycler() {
+        if (mMovie == null) {
+            return
+        }
+        val playList = mMovie!!.playList
+        if (playList.isNullOrEmpty()) {
+            return
+        }
+        playList.forEachIndexed { index, s ->
+            if (!TextUtils.isEmpty(s)) {
+                fetchBeanList(index, s)
+                routeList.add(index)
+            }
+        }
+        initRouteRv()
+    }
+
+    private val routeList by lazy {
+        arrayListOf<Int>()
+    }
+    private val routeAdapter by lazy {
+        RouteAdapter {
+
+        }
+    }
+
+    private fun initRouteRv() {
+        binding.routeRecyclerView.layoutManager =
+            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.routeRecyclerView.adapter = routeAdapter
+        routeAdapter.setList(routeList)
+    }
+
+    private val routeMap = HashMap<Int, List<EpBean>>()
+    private fun fetchBeanList(index: Int, playUrl: String) {
+        val arr = playUrl.split("\r\n")
+        if (arr.isNullOrEmpty()) {
+            return
+        }
+        val list = arrayListOf<EpBean>()
+        for (urlF in arr) {
+            val arr = urlF.split("$")
+            if (arr.isNullOrEmpty() || arr.size != 2) {
+                continue
+            }
+            val bean = EpBean()
+            bean.epName = arr[0]
+            bean.epUrl = arr[1]
+            bean.name = mMovie?.playName
+            bean.routeIndex = index
+            bean.cover = mMovie?.cover
+            list.add(bean)
+        }
+        routeMap[index] = list
     }
 
     override fun onBackPressed() {
@@ -168,17 +233,18 @@ class MovieDetailActivity : AppCompatActivity() {
 
             })
     }
-    private fun showDesContent(){
-        val bottomSheetDialog = BottomSheetDialog(this,R.style.BottomSheetDialog)
+
+    private fun showDesContent() {
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
         bottomSheetDialog.setContentView(bottomSheetView)
         mMovie?.let {
-            bottomSheetView.findViewById<TextView>(R.id.name).text =it.playName
-            bottomSheetView.findViewById<TextView>(R.id.actor).text =it.playActor
-            bottomSheetView.findViewById<TextView>(R.id.director).text =it.playDirector
-            bottomSheetView.findViewById<TextView>(R.id.year).text =it.playYear
-            bottomSheetView.findViewById<TextView>(R.id.area).text =it.playArea
-            bottomSheetView.findViewById<TextView>(R.id.des).text =it.playDesInfo
+            bottomSheetView.findViewById<TextView>(R.id.name).text = it.playName
+            bottomSheetView.findViewById<TextView>(R.id.actor).text = it.playActor
+            bottomSheetView.findViewById<TextView>(R.id.director).text = it.playDirector
+            bottomSheetView.findViewById<TextView>(R.id.year).text = it.playYear
+            bottomSheetView.findViewById<TextView>(R.id.area).text = it.playArea
+            bottomSheetView.findViewById<TextView>(R.id.des).text = it.playDesInfo
         }
         // 设置按钮点击事件
         bottomSheetView.findViewById<View>(R.id.close).setOnClickListener {
