@@ -326,7 +326,9 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val adapter by lazy {
-        MovieListContentAdapter()
+        MovieListContentAdapter{
+            MovieDetailActivity.nav(this,it.id)
+        }
     }
 
     private fun initView(loadMore: Boolean, list: List<PageBean>?, noMore: Boolean) {

@@ -19,6 +19,7 @@ import com.exp.post.databinding.ActivityMovieDetailBinding
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.ui.home.ShowFragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -87,6 +88,9 @@ class MovieDetailActivity : AppCompatActivity() {
             binding.information.text = sb
             binding.actor.text = playActor
             binding.mark.text = playMark
+        }
+        binding.desc.setOnClickListener {
+            showDesContent()
         }
     }
     private fun requestMovie() {
@@ -162,6 +166,18 @@ class MovieDetailActivity : AppCompatActivity() {
                 }
 
             })
+    }
+    private fun showDesContent(){
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+        bottomSheetDialog.setContentView(bottomSheetView)
+        // 设置按钮点击事件
+        bottomSheetView.findViewById<View>(R.id.close).setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        // 显示BottomSheetDialog
+        bottomSheetDialog.show()
     }
 
 }

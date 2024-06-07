@@ -13,7 +13,7 @@ import com.exp.post.bean.PageBean
 import com.exp.post.tools.AndroidUtils
 
 
-class MovieListContentAdapter() :
+class MovieListContentAdapter(val  click:(PageBean)->Unit) :
     BaseQuickAdapter<PageBean, BaseViewHolder>(R.layout.layout_show1), LoadMoreModule {
     override fun convert(holder: BaseViewHolder, item: PageBean) {
         val cover = holder.getView<ImageView>(R.id.cover)
@@ -30,6 +30,8 @@ class MovieListContentAdapter() :
             .apply(requestOptions).into(holder.getView(R.id.cover))
         holder.setText(R.id.score, item.playScore)
         holder.setText(R.id.mark, item.playMark)
-
+        holder.itemView.setOnClickListener {
+            click(item)
+        }
     }
 }
