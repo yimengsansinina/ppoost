@@ -5,6 +5,7 @@
     android:background="@drawable/bottom_sheet_background"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <TextView
+    android:textSize="18dp"
     android:layout_marginStart="15dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"

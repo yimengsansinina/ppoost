@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
@@ -171,6 +172,14 @@ class MovieDetailActivity : AppCompatActivity() {
         val bottomSheetDialog = BottomSheetDialog(this,R.style.BottomSheetDialog)
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
         bottomSheetDialog.setContentView(bottomSheetView)
+        mMovie?.let {
+            bottomSheetView.findViewById<TextView>(R.id.name).text =it.playName
+            bottomSheetView.findViewById<TextView>(R.id.actor).text =it.playActor
+            bottomSheetView.findViewById<TextView>(R.id.director).text =it.playDirector
+            bottomSheetView.findViewById<TextView>(R.id.year).text =it.playYear
+            bottomSheetView.findViewById<TextView>(R.id.area).text =it.playArea
+            bottomSheetView.findViewById<TextView>(R.id.des).text =it.playDesInfo
+        }
         // 设置按钮点击事件
         bottomSheetView.findViewById<View>(R.id.close).setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -178,4 +187,5 @@ class MovieDetailActivity : AppCompatActivity() {
         // 显示BottomSheetDialog
         bottomSheetDialog.show()
     }
+
 }
