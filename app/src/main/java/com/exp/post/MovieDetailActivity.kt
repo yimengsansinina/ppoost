@@ -168,16 +168,14 @@ class MovieDetailActivity : AppCompatActivity() {
             })
     }
     private fun showDesContent(){
-        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetDialog = BottomSheetDialog(this,R.style.BottomSheetDialog)
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
         bottomSheetDialog.setContentView(bottomSheetView)
         // 设置按钮点击事件
         bottomSheetView.findViewById<View>(R.id.close).setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-
         // 显示BottomSheetDialog
         bottomSheetDialog.show()
     }
-
 }
