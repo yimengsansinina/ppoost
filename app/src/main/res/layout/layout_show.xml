@@ -4,6 +4,11 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <TextView
+    android:textColor="@color/black"
+    android:layout_marginTop="10dp"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:layout_marginStart="15dp"
     android:id="@+id/tv_title"
     app:layout_constraintTop_toTopOf="parent"
     android:layout_width="match_parent"
