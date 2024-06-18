@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
+import com.exp.post.adapter.EPAdapter
 import com.exp.post.adapter.RouteAdapter
 import com.exp.post.bean.EpBean
 import com.exp.post.bean.MovieInfoRequest
@@ -128,6 +129,15 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         }
         initRouteRv()
+        initEpRv()
+    }
+    private fun initEpRv() {
+        val epBean= routeMap[mCurrentRouteIndex]
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.recyclerView.adapter = epAdapter
+        epAdapter.setList(epBean)
+
     }
 
     private val routeList by lazy {
@@ -138,13 +148,20 @@ class MovieDetailActivity : AppCompatActivity() {
 
         }
     }
+    private val epAdapter by lazy {
+        EPAdapter {
 
+        }
+    }
+private var mCurrentRouteIndex =0
     private fun initRouteRv() {
         binding.routeRecyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.routeRecyclerView.adapter = routeAdapter
         routeAdapter.setList(routeList)
+
     }
+
 
     private val routeMap = HashMap<Int, List<EpBean>>()
     private fun fetchBeanList(index: Int, playUrl: String) {

@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
                 .add("记录片", ShowFragment::class.java, bundleOf("topC" to 5))
                 .create()
         )
-
+        binding.viewpager.offscreenPageLimit=5
         binding.viewpager.adapter = adapter
 
         binding.viewpagertab.setViewPager( binding.viewpager)
