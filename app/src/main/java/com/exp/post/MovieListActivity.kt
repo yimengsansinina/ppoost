@@ -8,7 +8,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,7 @@ import com.exp.post.adapter.MovieListContentAdapter
 import com.exp.post.bean.MovieListBean
 import com.exp.post.bean.MovieListRequest
 import com.exp.post.bean.MovieListResponse
-import com.exp.post.bean.PageBean
+import com.exp.post.dbs.PageBean
 import com.exp.post.databinding.ActivityMovieListBinding
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi

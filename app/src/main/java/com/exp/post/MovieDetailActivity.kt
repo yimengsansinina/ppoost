@@ -1,7 +1,6 @@
 package com.exp.post
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,19 +9,15 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
-import cn.jzvd.JzvdStd
 import com.exp.post.adapter.EPAdapter
 import com.exp.post.adapter.RouteAdapter
 import com.exp.post.bean.EpBean
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
-import com.exp.post.bean.MovieListRequest
-import com.exp.post.bean.MovieListResponse
-import com.exp.post.bean.PageBean
+import com.exp.post.dbs.PageBean
 import com.exp.post.databinding.ActivityMovieDetailBinding
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
@@ -47,12 +42,12 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private val mId by lazy {
-        intent?.getIntExtra("id", 0) ?: 0
+        intent?.getLongExtra("id", 0) ?: 0
     }
 
     companion object {
         const val TAG = "MovieDetailActivity"
-        fun nav(activity: AppCompatActivity, id: Int) {
+        fun nav(activity: AppCompatActivity, id: Long) {
             val intent = Intent(activity, MovieDetailActivity::class.java)
             intent.putExtra("id", id)
             activity.startActivity(intent)
@@ -60,7 +55,7 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        if (mId == 0) {
+        if (mId == 0L) {
             return
         }
         requestMovie()
@@ -201,7 +196,7 @@ private var mCurrentRouteIndex =0
 
     private val mHandler = Handler(Looper.getMainLooper())
     private fun queryMovieList(
-        id: Int,
+        id: Long,
         success: (PageBean) -> Unit,
         fail: (Int) -> Unit
     ) {
@@ -216,6 +211,7 @@ private var mCurrentRouteIndex =0
                     call: Call<MovieInfoResponse>,
                     response: Response<MovieInfoResponse>
                 ) {
+                    Log.d(TAG, "onResponse: ")
                     if (!response.isSuccessful) {
                         mHandler.post {
                             fail(100)
@@ -242,7 +238,7 @@ private var mCurrentRouteIndex =0
                 }
 
                 override fun onFailure(call: Call<MovieInfoResponse>, t: Throwable) {
-                    Log.d(ShowFragment.TAG, "onFailure: t=" + t.message)
+                    Log.d(TAG, "onFailure: t=" + t.message)
                     mHandler.post {
                         fail(100)
                     }

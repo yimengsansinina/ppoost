@@ -199,6 +199,7 @@ private val map =ArrayMap<Int,Int>()
                         }
                         return
                     }
+                    Log.d(TAG, "onResponse= ${response.body()}")
 //                    map.clear()
                     var flag =0
                     res.forEachIndexed { index, homePageBean ->

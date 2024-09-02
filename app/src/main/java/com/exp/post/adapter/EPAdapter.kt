@@ -10,7 +10,7 @@ class EPAdapter(
 ) : BaseQuickAdapter<EpBean, BaseViewHolder>(R.layout.layout_list_rv_ep) {
     var checkPos = 0
     override fun convert(holder: BaseViewHolder, item: EpBean) {
-        val adapterPosition = holder.bindingAdapterPosition
+        val adapterPosition = holder.adapterPosition
         holder.setText(R.id.name, item.epName)
         if (adapterPosition==checkPos) {
             holder.setTextColor(R.id.name,context.resources.getColor(R.color.puc61a01))
