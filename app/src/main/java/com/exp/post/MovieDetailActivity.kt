@@ -147,17 +147,17 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun initEpRv(): EpBean? {
         if (mCurrentRouteIndex > routeMap.size - 1 || mCurrentRouteIndex < 0) {
-                return null
+            return null
         }
         val epBean = routeMap[mCurrentRouteIndex]
-        if (epBean==null){
+        if (epBean == null) {
             return null
         }
 
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.recyclerView.adapter = epAdapter
-        if (mCurrentEpIndex <= epBean.size -1 && mCurrentEpIndex >= 0) {
+        if (mCurrentEpIndex <= epBean.size - 1 && mCurrentEpIndex >= 0) {
             epAdapter.checkPos = mCurrentEpIndex
         } else {
             mCurrentEpIndex = 0
@@ -179,17 +179,33 @@ class MovieDetailActivity : AppCompatActivity() {
         if (pos == mCurrentRouteIndex) {
             return
         }
-        if (pos > routeMap.size - 1 || pos < 0) {
+//        if (pos > routeMap.size - 1 || pos < 0) {
+//            return
+//        }
+        val epBeans = routeMap[pos]
+        if (epBeans == null) {
             return
         }
-        val epBeans = routeMap[pos]
-        if ( binding.recyclerView.adapter==null){
+        if (binding.recyclerView.adapter == null) {
             binding.recyclerView.layoutManager =
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             binding.recyclerView.adapter = epAdapter
         }
-        mCurrentRouteIndex= pos
+        mCurrentRouteIndex = pos
         epAdapter.setList(epBeans)
+        //
+        if (mCurrentEpIndex >= 0 && mCurrentEpIndex < epBeans.size) {
+            val epBean = epBeans[mCurrentEpIndex]
+            clickEp(epBean)
+            epAdapter.checkPos = mCurrentEpIndex
+            epAdapter.notifyItemChanged(mCurrentEpIndex)
+        } else {
+            mCurrentEpIndex = 0
+            val epBean = epBeans[0]
+            clickEp(epBean)
+            epAdapter.checkPos = 0
+            epAdapter.notifyItemChanged(0)
+        }
     }
 
     private val epAdapter by lazy {
@@ -197,7 +213,7 @@ class MovieDetailActivity : AppCompatActivity() {
             if (pos == mCurrentEpIndex) {
                 return@EPAdapter
             }
-            mCurrentEpIndex=pos
+            mCurrentEpIndex = pos
             clickEp(item)
         }
     }
