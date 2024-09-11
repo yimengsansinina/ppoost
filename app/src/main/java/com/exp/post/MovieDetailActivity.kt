@@ -66,6 +66,9 @@ class MovieDetailActivity : AppCompatActivity() {
         if (mId == 0L) {
             return
         }
+        binding.backTiny.setOnClickListener {
+            finish()
+        }
         requestMovie()
 //        val jzvdStd: JzvdStd = findViewById<View>(R.id.jz_video) as JzvdStd
 //        jzvdStd.setUp(
@@ -99,6 +102,7 @@ class MovieDetailActivity : AppCompatActivity() {
             binding.information.text = sb
             binding.actor.text = playActor
             binding.mark.text = playMark
+            binding.nameTitle.text = playName
         }
         binding.desc.setOnClickListener {
             showDesContent()
