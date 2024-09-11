@@ -6,7 +6,7 @@ import com.exp.post.R
 import com.exp.post.bean.EpBean
 
 class EPAdapter(
-    val click: (EpBean) -> Unit
+    val click: (EpBean,Int) -> Unit
 ) : BaseQuickAdapter<EpBean, BaseViewHolder>(R.layout.layout_list_rv_ep) {
     var checkPos = 0
     override fun convert(holder: BaseViewHolder, item: EpBean) {
@@ -23,7 +23,7 @@ class EPAdapter(
             }
             checkPos = adapterPosition
             notifyDataSetChanged()
-            click(item)
+            click(item,adapterPosition)
         }
     }
 }

@@ -24,14 +24,17 @@ import io.objectbox.annotation.Transient
     var playDesInfo: String? = null,
 
     //
-    var progress:Long=0L
+    var historyProgress:Long=0L,
+    var historySource:Int=0,
+    var historyEpIndex:Int=0
 )
 {
     @Transient
     var playList: List<String>? = null
     override fun toString(): String {
-        return "PageBean(id=$id, playName=$playName, cover=$cover, playScore=$playScore, playMark=$playMark, playActor=$playActor, clsId=$clsId, playYear=$playYear, playArea=$playArea, topClass=$topClass, playLanguage=$playLanguage, playDirector=$playDirector, playDesInfo=$playDesInfo, progress=$progress, playList=$playList)"
+        return "PageBean(id=$id, playName=$playName, cover=$cover, playScore=$playScore, playMark=$playMark, playActor=$playActor, clsId=$clsId, playYear=$playYear, playArea=$playArea, topClass=$topClass, playLanguage=$playLanguage, playDirector=$playDirector, playDesInfo=$playDesInfo, historyProgress=$historyProgress, historySource=$historySource, historyEpIndex=$historyEpIndex, playList=$playList)"
     }
+
 
 }
 

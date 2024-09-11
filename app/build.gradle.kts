@@ -75,6 +75,9 @@ dependencies {
     implementation ("com.google.android.exoplayer:exoplayer-hls:2.19.1")
     implementation ("com.tencent:mmkv:1.3.4")
     implementation ("com.google.code.gson:gson:2.2.4")
+    implementation ("io.reactivex.rxjava3:rxjava:3.0.13")
+    implementation ("io.reactivex.rxjava3:rxandroid:3.0.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

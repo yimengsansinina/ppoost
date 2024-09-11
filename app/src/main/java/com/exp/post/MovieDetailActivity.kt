@@ -1,6 +1,7 @@
 package com.exp.post
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,17 +13,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.Jzvd
+import cn.jzvd.JzvdStd
 import com.exp.post.adapter.EPAdapter
 import com.exp.post.adapter.RouteAdapter
 import com.exp.post.bean.EpBean
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
-import com.exp.post.dbs.PageBean
 import com.exp.post.databinding.ActivityMovieDetailBinding
+import com.exp.post.dbs.HistoryPageBean
+import com.exp.post.dbs.HistoryUtils
+import com.exp.post.dbs.PageBean
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
-import com.exp.post.ui.home.ShowFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +37,7 @@ import retrofit2.Response
 
 class MovieDetailActivity : AppCompatActivity() {
 
+    private var disposable: Disposable? = null
     private lateinit var binding: ActivityMovieDetailBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,17 +106,24 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun requestMovie() {
-        queryMovieList(mId, {
-            mMovie = it
-            Log.d(TAG, "requestMovie: mMovie=$mMovie")
-            initMovieUI()
-            initRecycler()
-        }, {
-            //todo
-        })
+        getFromHistory { history ->
+            mCurrentRouteIndex = history?.historySource ?: 0
+            mCurrentEpIndex = history?.historyEpIndex ?: 0
+            queryMovieList(mId, {
+                it.historyProgress = history?.historyProgress ?: 0L
+                it.historySource = history?.historySource ?: 0
+                it.historyEpIndex = history?.historyEpIndex ?: 0
+                mMovie = it
+                Log.d(TAG, "requestMovie: mMovie=$mMovie")
+                initMovieUI()
+                initRecycler()
+//                startPlay()
+            }, {
+                //todo
+            })
+        }
     }
 
-    //private val map =ArrayMap<Int>
     private fun initRecycler() {
         if (mMovie == null) {
             return
@@ -124,15 +139,31 @@ class MovieDetailActivity : AppCompatActivity() {
             }
         }
         initRouteRv()
-        initEpRv()
+        val bean = initEpRv()
+        bean?.run {
+            clickEp(this)
+        }
     }
-    private fun initEpRv() {
-        val epBean= routeMap[mCurrentRouteIndex]
+
+    private fun initEpRv(): EpBean? {
+        if (mCurrentRouteIndex > routeMap.size - 1 || mCurrentRouteIndex < 0) {
+                return null
+        }
+        val epBean = routeMap[mCurrentRouteIndex]
+        if (epBean==null){
+            return null
+        }
+
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.recyclerView.adapter = epAdapter
+        if (mCurrentEpIndex <= epBean.size -1 && mCurrentEpIndex >= 0) {
+            epAdapter.checkPos = mCurrentEpIndex
+        } else {
+            mCurrentEpIndex = 0
+        }
         epAdapter.setList(epBean)
-
+        return epBean[mCurrentEpIndex]
     }
 
     private val routeList by lazy {
@@ -140,20 +171,60 @@ class MovieDetailActivity : AppCompatActivity() {
     }
     private val routeAdapter by lazy {
         RouteAdapter {
-
+            clickRoute(it)
         }
     }
+
+    private fun clickRoute(pos: Int) {
+        if (pos == mCurrentRouteIndex) {
+            return
+        }
+        if (pos > routeMap.size - 1 || pos < 0) {
+            return
+        }
+        val epBeans = routeMap[pos]
+        if ( binding.recyclerView.adapter==null){
+            binding.recyclerView.layoutManager =
+                LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+            binding.recyclerView.adapter = epAdapter
+        }
+        mCurrentRouteIndex= pos
+        epAdapter.setList(epBeans)
+    }
+
     private val epAdapter by lazy {
-        EPAdapter {
-
+        EPAdapter() { item, pos ->
+            if (pos == mCurrentEpIndex) {
+                return@EPAdapter
+            }
+            mCurrentEpIndex=pos
+            clickEp(item)
         }
     }
-private var mCurrentRouteIndex =0
+
+    private fun clickEp(epBean: EpBean) {
+        val jzvdStd: JzvdStd = findViewById<View>(R.id.jz_video) as JzvdStd
+        jzvdStd.setUp(
+            epBean.epUrl,
+            epBean.name + "," + epBean.epName
+        )
+        jzvdStd.posterImageView.setImageURI(Uri.parse(epBean.cover))
+        jzvdStd.startVideo()
+    }
+
+    private var mCurrentRouteIndex = 0
+    private var mCurrentEpIndex = 0
     private fun initRouteRv() {
         binding.routeRecyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.routeRecyclerView.adapter = routeAdapter
+        if (mCurrentRouteIndex <= routeList.size - 1 && mCurrentRouteIndex >= 0) {
+            routeAdapter.checkPos = mCurrentRouteIndex
+        } else {
+            mCurrentRouteIndex = 0
+        }
         routeAdapter.setList(routeList)
+
 
     }
 
@@ -195,6 +266,42 @@ private var mCurrentRouteIndex =0
 
 
     private val mHandler = Handler(Looper.getMainLooper())
+    private fun getFromHistory(ok: (HistoryPageBean?) -> Unit) {
+        // 创建一个 Observable，用于模拟耗时操作
+        val observable: Observable<HistoryPageBean> = Observable.create { emitter ->
+            // 在这里进行一些耗时操作，比如网络请求
+            try {
+                val query = HistoryUtils.query(mId)
+                if (query == null) {
+
+                    emitter.onError(Exception("null"))
+                    return@create
+                }
+                emitter.onNext(query)
+//                Thread.sleep(2000) // 模拟耗时操作
+//                emitter.onNext("获取的数据")
+//                emitter.onComplete()
+            } catch (e: Exception) {
+                emitter.onError(e)
+            }
+        }
+
+        // 订阅 Observable
+
+        // 订阅 Observable
+        disposable = observable
+            .subscribeOn(Schedulers.io()) // 在 IO 线程执行任务
+            .observeOn(AndroidSchedulers.mainThread()) // 在主线程更新 UI
+            .subscribe(
+                { data ->
+                    ok(data)
+                }
+            ) { throwable ->
+                // 处理错误
+                ok(null)
+            }
+    }
+
     private fun queryMovieList(
         id: Long,
         success: (PageBean) -> Unit,

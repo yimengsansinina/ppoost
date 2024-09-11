@@ -38,10 +38,10 @@ class WatchHistoryActivity : AppCompatActivity() {
         val pageBean = ObjectBox.store.boxFor(PageBean::class.java)
         pageBean.removeAll()
 
-        val pageBean1 = PageBean(playName = "陈情令", playDesInfo = "好看的剧集1", progress = 1000L, playMark = "更新到第6集", id = 0, cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
-        val pageBean2 = PageBean(playName = "插翅难逃", playDesInfo = "好看的剧集2", progress = 1000L, playMark = "更新到第10集", id =0 , cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
-        pageBean.put(pageBean1)
-        pageBean.put(pageBean2)
+//        val pageBean1 = PageBean(playName = "陈情令", playDesInfo = "好看的剧集1", progress = 1000L, playMark = "更新到第6集", id = 0, cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
+//        val pageBean2 = PageBean(playName = "插翅难逃", playDesInfo = "好看的剧集2", progress = 1000L, playMark = "更新到第10集", id =0 , cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
+//        pageBean.put(pageBean1)
+//        pageBean.put(pageBean2)
 
         fetchLocalData {
             Log.d(TAG, "onCreate() called,it=${it.size}")
