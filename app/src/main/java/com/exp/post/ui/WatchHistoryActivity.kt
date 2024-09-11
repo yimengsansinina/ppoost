@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.exp.post.MovieDetailActivity
 import com.exp.post.adapter.WatchHistoryAdapter
 import com.exp.post.dbs.PageBean
 import com.exp.post.databinding.ActivityWatchHistoryBinding
@@ -24,7 +25,7 @@ class WatchHistoryActivity : AppCompatActivity() {
     }
 
     private fun gotoDetail(pageBean: PageBean) {
-
+        MovieDetailActivity.nav(this,pageBean.id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +38,8 @@ class WatchHistoryActivity : AppCompatActivity() {
         val pageBean = ObjectBox.store.boxFor(PageBean::class.java)
         pageBean.removeAll()
 
-        val pageBean1 = PageBean(playName = "陈情令", playDesInfo = "好看的剧集1", progress = 1000L, playMark = "更新到第6集", id = 0)
-        val pageBean2 = PageBean(playName = "插翅难逃", playDesInfo = "好看的剧集2", progress = 1000L, playMark = "更新到第10集", id = 0)
+        val pageBean1 = PageBean(playName = "陈情令", playDesInfo = "好看的剧集1", progress = 1000L, playMark = "更新到第6集", id = 0, cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
+        val pageBean2 = PageBean(playName = "插翅难逃", playDesInfo = "好看的剧集2", progress = 1000L, playMark = "更新到第10集", id =0 , cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
         pageBean.put(pageBean1)
         pageBean.put(pageBean2)
 

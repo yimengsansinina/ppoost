@@ -4,12 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <ImageView
+    android:layout_marginTop="10dp"
     android:id="@+id/cover_iv"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:layout_width="150dp"
     android:layout_height="80dp"/>
     <TextView
+        android:layout_marginStart="10dp"
         android:singleLine="true"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@id/cover_iv"
@@ -18,6 +20,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
         android:singleLine="true"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@id/cover_iv"
@@ -26,6 +30,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
         android:singleLine="true"
         android:ellipsize="end"
         app:layout_constraintStart_toEndOf="@id/cover_iv"
@@ -34,8 +40,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <View
+        android:layout_marginTop="10dp"
+        android:background="@color/pua969696"
         app:layout_constraintStart_toEndOf="@id/cover_iv"
-        app:layout_constraintBottom_toBottomOf="@id/cover_iv"
+        app:layout_constraintTop_toBottomOf="@id/cover_iv"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
