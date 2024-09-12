@@ -49,17 +49,10 @@ class WatchHistoryActivity : AppCompatActivity() {
                     return@create
                 }
                 emitter.onNext(query)
-//                Thread.sleep(2000) // 模拟耗时操作
-//                emitter.onNext("获取的数据")
-//                emitter.onComplete()
             } catch (e: Exception) {
                 emitter.onError(e)
             }
         }
-
-        // 订阅 Observable
-
-        // 订阅 Observable
         disposable = observable
             .subscribeOn(Schedulers.io()) // 在 IO 线程执行任务
             .observeOn(AndroidSchedulers.mainThread()) // 在主线程更新 UI
