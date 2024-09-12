@@ -288,25 +288,31 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
         }
         super.onBackPressed()
     }
-
+private fun convert(pageBean: PageBean): HistoryPageBean {
+    val historyPageBean = HistoryPageBean()
+    historyPageBean.id=pageBean.id
+    historyPageBean.playName=pageBean.playName
+    historyPageBean.cover=pageBean.cover
+    historyPageBean.playDesInfo=pageBean.playDesInfo
+    return historyPageBean
+}
     override fun onPause() {
         super.onPause()
         //
         if (mMovie != null) {
             val progress = mVideoView.getCurrentPositionWhenPlaying()
             Log.d(TAG, "onPause: progress=$progress")
-            val historyPageBean = HistoryPageBean()
-            historyPageBean.historySource = mCurrentRouteIndex
-            historyPageBean.historyEpIndex = mCurrentEpIndex
-            historyPageBean.historyProgress = progress
-            historyPageBean.time = Calendar.getInstance().timeInMillis / 1000L
-            historyPageBean.id = mId
-            HistoryUtils.insert(historyPageBean)
-//            val query = HistoryUtils.query(mId)
-//            Log.d(TAG, "onPause: query.historyProgress=${query?.historyProgress}")
+            mMovie?.let {
+                val historyPageBean = convert(it)
+                historyPageBean.historySource = mCurrentRouteIndex
+                historyPageBean.historyEpIndex = mCurrentEpIndex
+                historyPageBean.historyProgress = progress
+                historyPageBean.time = Calendar.getInstance().timeInMillis / 1000L
+                historyPageBean.id = mId
+                HistoryUtils.insert(historyPageBean)
+            }
         }
         Jzvd.releaseAllVideos()
-
     }
 
 

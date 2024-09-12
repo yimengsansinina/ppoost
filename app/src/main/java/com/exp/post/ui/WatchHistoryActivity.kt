@@ -1,14 +1,16 @@
 package com.exp.post.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.exp.post.MovieDetailActivity
 import com.exp.post.adapter.WatchHistoryAdapter
-import com.exp.post.dbs.PageBean
 import com.exp.post.databinding.ActivityWatchHistoryBinding
-import com.exp.post.dbs.ObjectBox
+import com.exp.post.dbs.HistoryPageBean
+import com.exp.post.dbs.HistoryUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -16,7 +18,14 @@ import io.reactivex.schedulers.Schedulers
 
 
 class WatchHistoryActivity : AppCompatActivity() {
-
+    companion object {
+        const val TAG = "WatchHistoryActivity"
+        fun nav(activity: FragmentActivity) {
+            val intent = Intent(activity, WatchHistoryActivity::class.java)
+            activity.startActivity(intent)
+        }
+    }
+    private var disposable: Disposable?=null
     private lateinit var binding: ActivityWatchHistoryBinding
     private val adapter by lazy {
         WatchHistoryAdapter {
@@ -24,10 +33,44 @@ class WatchHistoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun gotoDetail(pageBean: PageBean) {
+    private fun gotoDetail(pageBean: HistoryPageBean) {
         MovieDetailActivity.nav(this,pageBean.id)
     }
+    private fun fetchLocalData(ok: (List<HistoryPageBean>?) -> Unit) {
+        // 创建一个 Observable，用于模拟耗时操作
+        val observable: Observable<List<HistoryPageBean>> = Observable.create { emitter ->
+            // 在这里进行一些耗时操作，比如网络请求
+            try {
+                val query = HistoryUtils.selectAll()
+                if (query == null) {
 
+                    emitter.onError(Exception("null"))
+                    return@create
+                }
+                emitter.onNext(query)
+//                Thread.sleep(2000) // 模拟耗时操作
+//                emitter.onNext("获取的数据")
+//                emitter.onComplete()
+            } catch (e: Exception) {
+                emitter.onError(e)
+            }
+        }
+
+        // 订阅 Observable
+
+        // 订阅 Observable
+        disposable = observable
+            .subscribeOn(Schedulers.io()) // 在 IO 线程执行任务
+            .observeOn(AndroidSchedulers.mainThread()) // 在主线程更新 UI
+            .subscribe(
+                { data ->
+                    ok(data)
+                }
+            ) { throwable ->
+                // 处理错误
+                ok(null)
+            }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,23 +78,16 @@ class WatchHistoryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        val pageBean = ObjectBox.store.boxFor(PageBean::class.java)
-        pageBean.removeAll()
-
-//        val pageBean1 = PageBean(playName = "陈情令", playDesInfo = "好看的剧集1", progress = 1000L, playMark = "更新到第6集", id = 0, cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
-//        val pageBean2 = PageBean(playName = "插翅难逃", playDesInfo = "好看的剧集2", progress = 1000L, playMark = "更新到第10集", id =0 , cover = "https://ww4.sinaimg.cn/mw690/008u6GgOgy1hr3z9wgshxj30u016sgui.jpg")
-//        pageBean.put(pageBean1)
-//        pageBean.put(pageBean2)
-
+        HistoryUtils.selectAll()
         fetchLocalData {
-            Log.d(TAG, "onCreate() called,it=${it.size}")
-            //
+            Log.d(TAG, "onCreate() called,it=${it?.size}")
             binding.recyclerView.adapter = adapter
             binding.recyclerView.layoutManager = LinearLayoutManager(this)
-            adapter.setList(it)
+            it.let {list->
+                adapter.setList(list)
+            }
         }
         binding.backFl.setOnClickListener { finish() }
-
 
 //        val users: List<User> = getNewUsers()
 //        userBox.put(users)
@@ -92,28 +128,5 @@ class WatchHistoryActivity : AppCompatActivity() {
 
     }
 
-    private var mDisposable: Disposable? = null
-    private fun fetchLocalData(success: (List<PageBean>) -> Unit) {
-        mDisposable = Observable.create {
-            val pageBean = ObjectBox.store.boxFor(PageBean::class.java)
-//        val user = User(name = "fffff")
-//        userBox.put(user)
-            val all = pageBean.all
-            Log.d(TAG, "onCreate: fetchLocalData=$all")
-            it.onNext(all)
 
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                success(it)
-            }, {
-
-            })
-
-    }
-
-    companion object {
-        const val TAG = "MainActivity"
-    }
 }
