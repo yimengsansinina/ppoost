@@ -35,6 +35,7 @@ class WatchHistoryActivity : AppCompatActivity() {
 
     private fun gotoDetail(pageBean: HistoryPageBean) {
         MovieDetailActivity.nav(this,pageBean.id)
+        finish()
     }
     private fun fetchLocalData(ok: (List<HistoryPageBean>?) -> Unit) {
         // 创建一个 Observable，用于模拟耗时操作
@@ -88,45 +89,5 @@ class WatchHistoryActivity : AppCompatActivity() {
             }
         }
         binding.backFl.setOnClickListener { finish() }
-
-//        val users: List<User> = getNewUsers()
-//        userBox.put(users)
-//        val user = userBox[userId]
-//
-//        val users = userBox.all
-//        val query = userBox
-//            .query(User_.name.equal("fffff"))
-//            .order(User_.name)
-//            .build()
-//        val results = query.find()
-//        Log.d(TAG, "onCreate: results=$results")
-//        query.close()
-
-//        val isRemoved = userBox.remove(userId)
-//
-//        userBox.remove(users)
-//// alternatively:
-//        userBox.removeByIds(userIds)
-//
-//        userBox.removeAll()
-        //val userCount = userBox.count()
-//        store.callInTxAsync(object :Callable<String>{
-//            override fun call(): String {
-//               val box = ObjectBox.store.boxFor(User::class.java)
-//                val name = box.get(2).name;
-//                box.remove(1);
-//                return "text";
-//            }
-//
-//        }) { result, error ->
-//            if (error != null) {
-//                System.out.println("Failed to remove user with id " + "userId");
-//            } else {
-//                System.out.println("Removed user with name: " + result);
-//            }
-//        }
-
     }
-
-
 }
