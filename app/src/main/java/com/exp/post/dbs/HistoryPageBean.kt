@@ -3,11 +3,12 @@ package com.exp.post.dbs
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Transient
+import io.objectbox.annotation.Unique
 
 @Entity
 data class HistoryPageBean
     (
-    @Id
+    @Id(assignable = true)
     var id: Long = 0,
     var playName: String? = null,
     var cover: String? = null,

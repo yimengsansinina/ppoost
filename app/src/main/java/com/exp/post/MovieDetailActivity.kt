@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.jzvd.JZUtils
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
 import com.exp.post.adapter.EPAdapter
@@ -25,6 +26,7 @@ import com.exp.post.dbs.HistoryUtils
 import com.exp.post.dbs.PageBean
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
+import com.exp.post.wt.MJzvd
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,6 +35,7 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Calendar
 
 
 class MovieDetailActivity : AppCompatActivity() {
@@ -61,11 +64,17 @@ class MovieDetailActivity : AppCompatActivity() {
             activity.startActivity(intent)
         }
     }
-
+private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
     private fun initView() {
         if (mId == 0L) {
             return
         }
+        mVideoView.setPreparedListener(object :MJzvd.IPreparedListener{
+            override fun onPrepared() {
+                Log.d(TAG, "onPrepared() called,mCurrentProgress=$mCurrentProgress")
+                mVideoView.mediaInterface.seekTo(mCurrentProgress)
+            }
+        })
         binding.backTiny.setOnClickListener {
             finish()
         }
@@ -111,6 +120,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun requestMovie() {
         getFromHistory { history ->
+            Log.d(TAG, "requestMovie: getFromHistory=${history?.historyProgress}")
             mCurrentRouteIndex = history?.historySource ?: 0
             mCurrentEpIndex = history?.historyEpIndex ?: 0
             queryMovieList(mId, {
@@ -145,7 +155,9 @@ class MovieDetailActivity : AppCompatActivity() {
         initRouteRv()
         val bean = initEpRv()
         bean?.run {
-            clickEp(this)
+          val sec=  mMovie?.historyProgress?:0L
+            Log.d(TAG, "initRecycler: sec=$sec")
+            clickEp(this,sec)
         }
     }
 
@@ -200,13 +212,13 @@ class MovieDetailActivity : AppCompatActivity() {
         //
         if (mCurrentEpIndex >= 0 && mCurrentEpIndex < epBeans.size) {
             val epBean = epBeans[mCurrentEpIndex]
-            clickEp(epBean)
+            clickEp(epBean,mVideoView.currentPositionWhenPlaying)
             epAdapter.checkPos = mCurrentEpIndex
             epAdapter.notifyItemChanged(mCurrentEpIndex)
         } else {
             mCurrentEpIndex = 0
             val epBean = epBeans[0]
-            clickEp(epBean)
+            clickEp(epBean,mVideoView.currentPositionWhenPlaying)
             epAdapter.checkPos = 0
             epAdapter.notifyItemChanged(0)
         }
@@ -218,21 +230,21 @@ class MovieDetailActivity : AppCompatActivity() {
                 return@EPAdapter
             }
             mCurrentEpIndex = pos
-            clickEp(item)
+            clickEp(item,0)
         }
     }
-
-    private fun clickEp(epBean: EpBean) {
-        val jzvdStd: JzvdStd = findViewById<View>(R.id.jz_video) as JzvdStd
-        jzvdStd.setUp(
+    private fun clickEp(epBean: EpBean,playTime:Long) {
+        mCurrentProgress=playTime
+        mVideoView.setUp(
             epBean.epUrl,
             epBean.name + "," + epBean.epName
         )
-        jzvdStd.posterImageView.setImageURI(Uri.parse(epBean.cover))
-        jzvdStd.startVideo()
+        mVideoView.posterImageView.setImageURI(Uri.parse(epBean.cover))
+        mVideoView.startVideo()
     }
 
     private var mCurrentRouteIndex = 0
+    private var mCurrentProgress = 0L
     private var mCurrentEpIndex = 0
     private fun initRouteRv() {
         binding.routeRecyclerView.layoutManager =
@@ -244,8 +256,6 @@ class MovieDetailActivity : AppCompatActivity() {
             mCurrentRouteIndex = 0
         }
         routeAdapter.setList(routeList)
-
-
     }
 
 
@@ -281,7 +291,22 @@ class MovieDetailActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        //
+        if (mMovie != null) {
+            val progress = mVideoView.getCurrentPositionWhenPlaying()
+            Log.d(TAG, "onPause: progress=$progress")
+            val historyPageBean = HistoryPageBean()
+            historyPageBean.historySource = mCurrentRouteIndex
+            historyPageBean.historyEpIndex = mCurrentEpIndex
+            historyPageBean.historyProgress = progress
+            historyPageBean.time = Calendar.getInstance().timeInMillis / 1000L
+            historyPageBean.id = mId
+            HistoryUtils.insert(historyPageBean)
+//            val query = HistoryUtils.query(mId)
+//            Log.d(TAG, "onPause: query.historyProgress=${query?.historyProgress}")
+        }
         Jzvd.releaseAllVideos()
+
     }
 
 
