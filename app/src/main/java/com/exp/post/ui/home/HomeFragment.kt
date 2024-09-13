@@ -37,9 +37,12 @@ class HomeFragment : Fragment() {
 //        }
         return root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.searchFl.setOnClickListener {
 
+        }
         val adapter = FragmentPagerItemAdapter(
             childFragmentManager, FragmentPagerItems.with(activity)
                 .add("电视剧", ShowFragment::class.java, bundleOf("topC" to 2))
@@ -49,12 +52,13 @@ class HomeFragment : Fragment() {
                 .add("记录片", ShowFragment::class.java, bundleOf("topC" to 5))
                 .create()
         )
-        binding.viewpager.offscreenPageLimit=5
+        binding.viewpager.offscreenPageLimit = 5
         binding.viewpager.adapter = adapter
 
-        binding.viewpagertab.setViewPager( binding.viewpager)
+        binding.viewpagertab.setViewPager(binding.viewpager)
 
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

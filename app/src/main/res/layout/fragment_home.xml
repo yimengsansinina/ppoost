@@ -8,9 +8,11 @@
 
 
     <com.ogaclejapan.smarttablayout.SmartTabLayout
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/viewpagertab"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
         android:layout_height="48dp"
         app:stl_indicatorAlwaysInCenter="false"
         app:stl_indicatorWithoutPadding="false"
@@ -38,6 +40,21 @@
         app:stl_titleOffset="24dp"
         app:stl_drawDecorationAfterTab="false"
         />
+    <FrameLayout
+        app:layout_constraintTop_toTopOf="@id/viewpagertab"
+        app:layout_constraintBottom_toBottomOf="@id/viewpagertab"
+        app:layout_constraintStart_toEndOf="@id/viewpagertab"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/search_fl"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:background="@drawable/ic_dashboard_black_24dp"
+            android:id="@+id/search_view"
+            android:layout_width="25dp"
+            android:layout_height="25dp"/>
+    </FrameLayout>
 
     <androidx.viewpager.widget.ViewPager
         app:layout_constraintTop_toBottomOf="@id/viewpagertab"
