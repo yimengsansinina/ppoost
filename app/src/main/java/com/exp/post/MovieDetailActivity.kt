@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -64,15 +65,23 @@ class MovieDetailActivity : AppCompatActivity() {
             activity.startActivity(intent)
         }
     }
-private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
+
+
+    private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
     private fun initView() {
         if (mId == 0L) {
             return
         }
-        mVideoView.setPreparedListener(object :MJzvd.IPreparedListener{
+        mVideoView.setPreparedListener(object : MJzvd.IPreparedListener {
             override fun onPrepared() {
                 Log.d(TAG, "onPrepared() called,mCurrentProgress=$mCurrentProgress")
                 mVideoView.mediaInterface.seekTo(mCurrentProgress)
+            }
+
+            override fun onFinish() {
+                //播放下一個
+                playNext()
+                Log.d(TAG, "onFinish: ")
             }
         })
         binding.backTiny.setOnClickListener {
@@ -86,6 +95,23 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
 //        )
 //        jzvdStd.posterImageView.setImageURI(Uri.parse("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640"))
 
+    }
+
+    private fun playNext() {
+        val currentPos = epAdapter.checkPos + 1
+        if (currentPos < 0) {
+            return
+        }
+        if (currentPos > epAdapter.data.size - 1) {
+            Toast.makeText(this, "播放結束", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        epAdapter.checkPos = currentPos
+        mCurrentEpIndex = currentPos
+        val epBean = epAdapter.data[currentPos]
+        epAdapter.notifyDataSetChanged()
+        clickEp(epBean, 0)
     }
 
     private var mMovie: PageBean? = null
@@ -155,9 +181,9 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
         initRouteRv()
         val bean = initEpRv()
         bean?.run {
-          val sec=  mMovie?.historyProgress?:0L
+            val sec = mMovie?.historyProgress ?: 0L
             Log.d(TAG, "initRecycler: sec=$sec")
-            clickEp(this,sec)
+            clickEp(this, sec)
         }
     }
 
@@ -212,15 +238,15 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
         //
         if (mCurrentEpIndex >= 0 && mCurrentEpIndex < epBeans.size) {
             val epBean = epBeans[mCurrentEpIndex]
-            clickEp(epBean,mVideoView.currentPositionWhenPlaying)
+            clickEp(epBean, mVideoView.currentPositionWhenPlaying)
             epAdapter.checkPos = mCurrentEpIndex
-            epAdapter.notifyItemChanged(mCurrentEpIndex)
+            epAdapter.notifyDataSetChanged()
         } else {
             mCurrentEpIndex = 0
             val epBean = epBeans[0]
-            clickEp(epBean,mVideoView.currentPositionWhenPlaying)
+            clickEp(epBean, mVideoView.currentPositionWhenPlaying)
             epAdapter.checkPos = 0
-            epAdapter.notifyItemChanged(0)
+            epAdapter.notifyDataSetChanged()
         }
     }
 
@@ -230,11 +256,12 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
                 return@EPAdapter
             }
             mCurrentEpIndex = pos
-            clickEp(item,0)
+            clickEp(item, 0)
         }
     }
-    private fun clickEp(epBean: EpBean,playTime:Long) {
-        mCurrentProgress=playTime
+
+    private fun clickEp(epBean: EpBean, playTime: Long) {
+        mCurrentProgress = playTime
         mVideoView.setUp(
             epBean.epUrl,
             epBean.name + "," + epBean.epName
@@ -288,14 +315,16 @@ private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
         }
         super.onBackPressed()
     }
-private fun convert(pageBean: PageBean): HistoryPageBean {
-    val historyPageBean = HistoryPageBean()
-    historyPageBean.id=pageBean.id
-    historyPageBean.playName=pageBean.playName
-    historyPageBean.cover=pageBean.cover
-    historyPageBean.playDesInfo=pageBean.playDesInfo
-    return historyPageBean
-}
+
+    private fun convert(pageBean: PageBean): HistoryPageBean {
+        val historyPageBean = HistoryPageBean()
+        historyPageBean.id = pageBean.id
+        historyPageBean.playName = pageBean.playName
+        historyPageBean.cover = pageBean.cover
+        historyPageBean.playDesInfo = pageBean.playDesInfo
+        return historyPageBean
+    }
+
     override fun onPause() {
         super.onPause()
         //

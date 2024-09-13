@@ -15,8 +15,14 @@ class MJzvd : JzvdStd {
 //        mediaInterface.seekTo(seekTimeMillis)
         mlistener?.onPrepared()
     }
+
+    override fun onStateAutoComplete() {
+        super.onStateAutoComplete()
+        mlistener?.onFinish()
+    }
     interface IPreparedListener{
         fun onPrepared()
+        fun  onFinish()
     }
     private var mlistener:IPreparedListener?=null
     public fun setPreparedListener(listener: IPreparedListener){
