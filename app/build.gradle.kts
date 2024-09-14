@@ -77,6 +77,7 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.2.4")
     implementation ("io.reactivex.rxjava3:rxjava:3.0.13")
     implementation ("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation ("me.gujun.android.taggroup:library:1.4@aar")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

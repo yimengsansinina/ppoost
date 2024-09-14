@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.exp.post.databinding.FragmentHomeBinding
+import com.exp.post.ui.SearchActivity
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
 
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.searchFl.setOnClickListener {
-
+            SearchActivity.nav(requireActivity())
         }
         val adapter = FragmentPagerItemAdapter(
             childFragmentManager, FragmentPagerItems.with(activity)

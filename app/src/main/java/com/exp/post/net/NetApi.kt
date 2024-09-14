@@ -1,15 +1,21 @@
 package com.exp.post.net
+
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
+import com.exp.post.bean.MaxSearchResponse
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
 import com.exp.post.bean.MovieListRequest
 import com.exp.post.bean.MovieListResponse
+import com.exp.post.bean.SearchResultResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Field
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface NetApi {
     //    val account = req.getParameter("account")
@@ -19,8 +25,18 @@ interface NetApi {
 
     @POST("queryMovieList")
     fun queryMovieList(@Body p: MovieListRequest): Call<MovieListResponse>
+
     @POST("movieInfo")
     fun movieInfo(@Body p: MovieInfoRequest): Call<MovieInfoResponse>
+
+    @GET("maxSearchWords")
+    fun maxSearchWords(): Call<MaxSearchResponse>
+
+    @GET("searchByKeyWords")
+    fun searchByKeyWords(
+        @Query("pg") pg: Int,
+        @Query("key") key: String
+    ): Call<SearchResultResponse>
 
 //    @FormUrlEncoded
 //    @POST("register")

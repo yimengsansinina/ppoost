@@ -28,6 +28,10 @@
             android:name=".MovieDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.SearchActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" />
         <!--        <activity android:name=".ui.WatchHistoryActivity"-->
         <!--            android:configChanges="orientation|screenSize|keyboardHidden"-->
         <!--            android:screenOrientation="portrait" />-->
