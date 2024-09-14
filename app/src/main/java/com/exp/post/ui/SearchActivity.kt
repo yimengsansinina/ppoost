@@ -36,6 +36,7 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Calendar
 
 
 class SearchActivity : AppCompatActivity() {
@@ -54,6 +55,8 @@ class SearchActivity : AppCompatActivity() {
             binding.recyclerView.visibility = View.VISIBLE
             binding.searchEt.setText(it)
             postNet(it, false)
+            HistoryWordUtils.insert(it)
+            initHistoryTag()
         }
     }
     private val resultAdapter by lazy {
@@ -70,18 +73,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        fetchLocalData {
-            Log.d(TAG, "onCreate() called,it=${it?.size}")
-            it?.let { list ->
-                val listT = list.map { bean -> bean.key }
-                binding.tagGroup.setTags(listT)
-            }
-//            binding.recyclerView.adapter = adapter
-//            binding.recyclerView.layoutManager = LinearLayoutManager(this)
-//            it.let {list->
-//                adapter.setList(list)
-//            }
-        }
+        initHistoryTag()
         binding.backFl.setOnClickListener { finish() }
         initView()
         queryMovieHot({
@@ -94,6 +86,16 @@ class SearchActivity : AppCompatActivity() {
         }, {
             Log.d(TAG, "onCreate: it=$it")
         })
+    }
+
+    private fun initHistoryTag() {
+        fetchLocalData {
+            Log.d(TAG, "onCreate() called,it=${it?.size}")
+            it?.let { list ->
+                val listT = list.map { bean -> bean.key }
+                binding.tagGroup.setTags(listT)
+            }
+        }
     }
 
     private val mHandler = Handler(Looper.getMainLooper())
@@ -149,7 +151,14 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        // 设置监听器来捕捉搜索按钮的点击事件
+        binding.clearHistory.setOnClickListener {
+            HistoryWordUtils.deleteAll()
+        }
+        binding.tagGroup.setOnTagClickListener {
+            binding.recyclerView.visibility = View.VISIBLE
+            postNet(it, false)
+            insertHistory(it)
+        }
         // 设置监听器来捕捉搜索按钮的点击事件
         binding.searchEt.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // 判断是否是搜索动作
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -158,6 +167,8 @@ class SearchActivity : AppCompatActivity() {
                 // 在此处执行搜索逻辑
                 binding.recyclerView.visibility = View.VISIBLE
                 postNet(query, false)
+                HistoryWordUtils.insert(query)
+                initHistoryTag()
                 TimeUtil.closeInput(binding.searchEt)
                 return@OnEditorActionListener true
             }
@@ -196,8 +207,17 @@ class SearchActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             postNet(trim.toString(), false)
+            HistoryWordUtils.insert(trim.toString())
+            initHistoryTag()
             binding.recyclerView.visibility = View.VISIBLE
         }
+    }
+
+    private fun insertHistory(it: String?) {
+        it?.let {
+            HistoryWordUtils.insert(it)
+        }
+        initHistoryTag()
     }
 
     private fun showLoading() {
