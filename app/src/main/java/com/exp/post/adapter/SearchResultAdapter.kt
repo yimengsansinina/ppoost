@@ -17,9 +17,9 @@ class SearchResultAdapter(
     override fun convert(holder: BaseViewHolder, item: PageBean) {
         holder.setText(R.id.name_tv, item.playName)
         holder.setText(R.id.year_tv, item.playYear)
-        holder.setText(R.id.actor_tv, item.playActor)
+        holder.setText(R.id.actor_tv, "演员:"+item.playActor)
         holder.setText(R.id.area_tv, item.playArea)
-        holder.setText(R.id.info_tv, item.playDesInfo)
+        holder.setText(R.id.info_tv, "摘要:"+item.playDesInfo?.trim())
         GlideUtils.loadImageCenterCrop(context, item.cover, holder.getView<ImageView>(R.id.cover_iv))
         holder.itemView.setOnClickListener {
             click(item)
