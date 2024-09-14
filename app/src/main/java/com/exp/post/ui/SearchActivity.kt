@@ -1,7 +1,6 @@
 package com.exp.post.ui
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,19 +9,16 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.exp.post.MovieDetailActivity
-import com.exp.post.MovieListActivity
 import com.exp.post.adapter.SearchHotAdapter
 import com.exp.post.adapter.SearchResultAdapter
 import com.exp.post.bean.MaxSearchResponse
-import com.exp.post.bean.MovieListRequest
-import com.exp.post.bean.MovieListResponse
 import com.exp.post.bean.SearchResultResponse
 import com.exp.post.databinding.ActivitySearchBinding
 import com.exp.post.dbs.HistoryBean
@@ -31,7 +27,7 @@ import com.exp.post.dbs.HistoryWordUtils
 import com.exp.post.dbs.PageBean
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
-import com.exp.post.tools.AndroidUtils
+import com.exp.post.tools.TimeUtil
 import com.exp.post.ui.home.ShowFragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -66,11 +62,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun gotoDetail(pageBean: HistoryPageBean) {
-        MovieDetailActivity.nav(this, pageBean.id)
-        finish()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -158,6 +149,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        // 设置监听器来捕捉搜索按钮的点击事件
+        // 设置监听器来捕捉搜索按钮的点击事件
+        binding.searchEt.setOnEditorActionListener(OnEditorActionListener { v, actionId, event -> // 判断是否是搜索动作
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // 执行搜索操作
+                val query = binding.searchEt.getText().toString().trim()
+                // 在此处执行搜索逻辑
+                binding.recyclerView.visibility = View.VISIBLE
+                postNet(query, false)
+                TimeUtil.closeInput(binding.searchEt)
+                return@OnEditorActionListener true
+            }
+            false
+        })
         binding.clearView.setOnClickListener {
             binding.searchEt.setText("")
             binding.recyclerView.visibility = View.INVISIBLE

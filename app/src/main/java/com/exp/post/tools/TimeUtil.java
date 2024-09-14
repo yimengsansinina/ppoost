@@ -1,5 +1,11 @@
 package com.exp.post.tools;
 
+import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+
+import com.exp.post.BaseApp;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -7,7 +13,18 @@ import java.util.Locale;
 
 public class TimeUtil {
 
+
     // 将时间戳转换为更友好的格式
+    public static void closeInput(EditText editText) {
+        // 获取输入法管理器
+        InputMethodManager imm = (InputMethodManager) BaseApp.Companion.getMApp().getSystemService(Context.INPUT_METHOD_SERVICE);
+// 关闭键盘
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+// 移除焦点，隐藏光标
+        editText.clearFocus();
+    }
+
     public static String formatFriendlyTimestamp(long timestamp) {
         // 当前时间
         Calendar now = Calendar.getInstance();

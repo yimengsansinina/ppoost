@@ -41,6 +41,10 @@
                 android:background="@drawable/ic_home_black_24dp" />
 
             <EditText
+                android:imeOptions="actionSearch"
+                android:maxLength="50"
+              android:singleLine="true"
+                android:ellipsize="end"
                 android:id="@+id/search_et"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
