@@ -1,10 +1,15 @@
 package com.exp.post.net
 
+import com.exp.post.BaseApp
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import okhttp3.Cache
+import okhttp3.CacheControl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
+import java.io.File
 import java.security.KeyStore
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HostnameVerifier
@@ -41,12 +46,36 @@ class HttpClient {
     private val writeTime = 15L
 
     private fun initOK(): OkHttpClient {
+        val cacheSize = 300 * 1024 * 1024L // 10 MB
+        val cache = Cache(File(BaseApp.mApp!!.getCacheDir(), "http_cache"), cacheSize)
         val builder = OkHttpClient.Builder()
         allowAllSSL(builder)
         builder.connectTimeout(connectTime, TimeUnit.SECONDS)
         builder.readTimeout(readTime, TimeUnit.SECONDS)
         builder.writeTimeout(writeTime, TimeUnit.SECONDS)
         builder.retryOnConnectionFailure(true)
+            .cache(cache)
+            .addInterceptor(object :Interceptor{
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    var request = chain.request()
+
+                    // 默认缓存时间
+                    val cacheControl: CacheControl = CacheControl.Builder()
+                        .maxAge(5, TimeUnit.MINUTES) // 默认在线时缓存 5 分钟
+                        .build()
+
+                    // 将默认缓存策略应用到请求
+                    request = request.newBuilder()
+                        .cacheControl(cacheControl)
+                        .build()
+
+                    val response = chain.proceed(request)
+                    return response.newBuilder()
+                        .header("Cache-Control", cacheControl.toString())
+                        .build()
+                }
+
+            })
         return builder.build()
     }
 

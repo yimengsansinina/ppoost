@@ -14,6 +14,7 @@ import retrofit2.http.Field
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -22,7 +23,7 @@ interface NetApi {
 //    val password = req.getParameter("password")
     @POST("homePage")
     fun homePage(@Body p: HomePageRequest): Call<HomePageResponse>
-
+//    @Headers("Cache-Control: no-cache")
     @POST("queryMovieList")
     fun queryMovieList(@Body p: MovieListRequest): Call<MovieListResponse>
 
@@ -37,7 +38,8 @@ interface NetApi {
         @Query("pg") pg: Int,
         @Query("key") key: String
     ): Call<SearchResultResponse>
-
+    //@Headers("Cache-Control: no-cache") // 禁用缓存
+    //@Headers("Cache-Control: max-age=3600") // 设置这个接口的缓存为 1 小时
 //    @FormUrlEncoded
 //    @POST("register")
 //    fun register(@FieldMap p: Map<String, String>): Call<LoginResponse>
