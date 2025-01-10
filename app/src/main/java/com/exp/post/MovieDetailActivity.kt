@@ -8,9 +8,11 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.JZUtils
@@ -27,6 +29,7 @@ import com.exp.post.dbs.HistoryUtils
 import com.exp.post.dbs.PageBean
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
+import com.exp.post.tools.GradleItemDecord
 import com.exp.post.wt.MJzvd
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import io.reactivex.Observable
@@ -141,6 +144,12 @@ class MovieDetailActivity : AppCompatActivity() {
         }
         binding.desc.setOnClickListener {
             showDesContent()
+        }
+        binding.mark.setOnClickListener {
+            xuanJi()
+        }
+        binding.more1.setOnClickListener {
+            xuanJi()
         }
     }
 
@@ -451,6 +460,39 @@ class MovieDetailActivity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
         }
         // 显示BottomSheetDialog
+        bottomSheetDialog.show()
+    }
+
+    private fun xuanJi() {
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialog)
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_episode_list, null)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        bottomSheetView.findViewById<View>(R.id.ivClose)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        val adapter1 = EpisodeAdapter(5) { position,item ->
+            Log.d(TAG, "showDesContent() called with: position = $position,item=$item")
+
+            if (position == mCurrentEpIndex) {
+               return@EpisodeAdapter
+            }
+            mCurrentEpIndex = position
+            clickEp(item, 0)
+        }
+
+        bottomSheetView.findViewById<RecyclerView>(R.id.recyclerView)?.apply {
+            layoutManager = GridLayoutManager(context, 5)
+            adapter = adapter1
+            addItemDecoration(GradleItemDecord())
+        }
+
+        // 生成集数列表
+        if (mCurrentRouteIndex >= 0 && mCurrentRouteIndex < routeMap.size) {
+            val epBean = routeMap[mCurrentRouteIndex]
+            epBean?.let { adapter1.updateData(it) }
+        }
         bottomSheetDialog.show()
     }
 
