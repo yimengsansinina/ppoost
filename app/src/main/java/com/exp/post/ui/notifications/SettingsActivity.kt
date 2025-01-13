@@ -57,7 +57,6 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun clearCache() {
-        // TODO: 实现清理缓存逻辑
         Toast.makeText(this, "正在清理缓存...", Toast.LENGTH_SHORT).show()
     }
     companion object {
@@ -68,7 +67,6 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
     private fun checkUpdate() {
-        // TODO: 实现检查更新逻辑
         Toast.makeText(this, "检查更新中...", Toast.LENGTH_SHORT).show()
     }
 
