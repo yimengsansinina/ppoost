@@ -78,6 +78,10 @@ dependencies {
     implementation ("io.reactivex.rxjava3:rxjava:3.0.13")
     implementation ("io.reactivex.rxjava3:rxandroid:3.0.0")
     implementation ("me.gujun.android.taggroup:library:1.4@aar")
+    implementation ("org.greenrobot:eventbus:3.2.0")
+    implementation  ("com.android.billingclient:billing:7.0.0")
+    implementation  ("com.android.billingclient:billing-ktx:7.0.0")
+    implementation ("com.wrapp.floatlabelededittext:library:0.0.6")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

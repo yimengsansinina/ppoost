@@ -47,6 +47,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+        <activity android:name=".user.UserRememberActivity" />
+        <activity android:name=".ui.notifications.MemberPayActivity" />
+        <activity android:name=".ui.notifications.SettingsActivity" />
+        <activity android:name=".ui.notifications.AboutActivity" />
     </application>
 
 

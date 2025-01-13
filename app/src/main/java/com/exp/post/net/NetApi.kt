@@ -2,12 +2,15 @@ package com.exp.post.net
 
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
+import com.exp.post.bean.LoginRequest
+import com.exp.post.bean.LoginResponse
 import com.exp.post.bean.MaxSearchResponse
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
 import com.exp.post.bean.MovieListRequest
 import com.exp.post.bean.MovieListResponse
 import com.exp.post.bean.SearchResultResponse
+import com.exp.post.bean.UpdateMemberRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -19,6 +22,17 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface NetApi {
+    @POST("login")
+    fun login(@Body p: LoginRequest): Call<LoginResponse>
+
+    @POST("register")
+    fun register(@Body p: LoginRequest): Call<LoginResponse>
+
+    //    val uuid = req.getParameter("uuid")
+//    val memberTime = req.getParameter("memberTime")
+    @POST("updateMember")
+    fun updateMember(@Body p: UpdateMemberRequest): Call<LoginResponse>
+
     //    val account = req.getParameter("account")
 //    val password = req.getParameter("password")
     @POST("homePage")

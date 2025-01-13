@@ -20,9 +20,9 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <View
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:background="@drawable/ic_launcher_background" />
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/ic_back" />
         </FrameLayout>
 
         <TextView
