@@ -151,6 +151,7 @@ class LoginFragment : DialogFragment() {
                 EventBus.getDefault().post(LoginEvent())
                 historyGet(account)
                 dismiss()
+                EventBus.getDefault().post(LoginEvent())
             }, {
                 Log.d(TAG, "onViewCreated: code=$it")
                 loadingView.visibility = View.GONE
