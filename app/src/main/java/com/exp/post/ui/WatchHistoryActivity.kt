@@ -3,6 +3,8 @@ package com.exp.post.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -81,6 +83,23 @@ class WatchHistoryActivity : AppCompatActivity() {
                 adapter.setList(list)
             }
         }
-        binding.backFl.setOnClickListener { finish() }
+        binding.ivBack.setOnClickListener { finish() }
+        binding.deleteFl.setOnClickListener {
+            showLogoutDialog() }
+    }
+    private fun showLogoutDialog() {
+        if (adapter.data.isEmpty()){
+            Toast.makeText(this,"浏览记录为空",Toast.LENGTH_SHORT).show()
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("提示")
+            .setMessage("确定要清空浏览记录吗？")
+            .setNegativeButton("取消", null)
+            .setPositiveButton("确定") { _, _ ->
+               HistoryUtils.deleteAll()
+                adapter.setList(null)
+            }
+            .show()
     }
 }

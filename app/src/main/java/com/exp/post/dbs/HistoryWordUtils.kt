@@ -6,6 +6,7 @@ import java.util.Calendar
 
 object HistoryWordUtils {
     private const val TAG = "HistoryWordUtils"
+    private const val MAX_COUNT = 15
     fun selectAll(): MutableList<HistoryBean>? {
         val pageBeanBox = ObjectBox.store.boxFor(HistoryBean::class.java)
         val query = pageBeanBox
@@ -13,12 +14,12 @@ object HistoryWordUtils {
             .order(HistoryBean_.time, DESCENDING)
             .build().find()
         // 判断记录数量是否超过 15
-        if (query.size > 15) {
+        if (query.size > MAX_COUNT) {
             // 获取超过 15 条的记录部分
-            val messagesToDelete: List<HistoryBean> = query.subList(15, query.size)
+            val messagesToDelete: List<HistoryBean> = query.subList(MAX_COUNT, query.size)
             // 删除多余的记录
             pageBeanBox.remove(messagesToDelete)
-            return query.subList(0, 15)
+            return query.subList(0, MAX_COUNT)
         }
         return query
     }
