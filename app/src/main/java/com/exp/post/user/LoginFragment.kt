@@ -27,9 +27,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.exp.post.bean.LoginRequest
 import com.exp.post.R
+import com.exp.post.bean.HistoryResponse
 import com.exp.post.bean.LoginEvent
 import com.exp.post.bean.LoginResponse
 import com.exp.post.bean.User
+import com.exp.post.dbs.HistoryPageBean
+import com.exp.post.dbs.HistoryUtils
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.tools.SPTools
@@ -67,6 +70,12 @@ class LoginFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         val register_tv = view.findViewById<View>(R.id.register_tv)
         val remember_tv = view.findViewById<View>(R.id.remember_tv)
+
+
+        val account_et = view.findViewById<EditText>(R.id.account_et)
+        if (!TextUtils.isEmpty(SPTools.getAccount())) {
+            account_et.setText(SPTools.getAccount())
+        }
         register_tv.setOnClickListener {
             dismiss()
             (parentFragment as? NotificationsFragment)?.showRegister()
@@ -140,6 +149,7 @@ class LoginFragment : DialogFragment() {
                 SPTools.saveMemberTime(it.memberTime)
                 Toast.makeText(activity, "登录成功", Toast.LENGTH_SHORT).show()
                 EventBus.getDefault().post(LoginEvent())
+                historyGet(account)
                 dismiss()
             }, {
                 Log.d(TAG, "onViewCreated: code=$it")
@@ -159,6 +169,14 @@ class LoginFragment : DialogFragment() {
                 }
             })
         }
+    }
+    private fun historyGet(account: String){
+        SPTools.saveLoginHistoryFlag(false)
+        history(account,{
+              SPTools.saveLoginHistoryFlag(true)
+        },{
+            SPTools.saveLoginHistoryFlag(false)
+        })
     }
 
     private var mDialog: AlertDialog? = null
@@ -253,6 +271,59 @@ class LoginFragment : DialogFragment() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    mHandler.post {
+                        fail(100)
+                    }
+                }
+
+            })
+    }
+
+    private fun history(
+        account: String,
+        success: (List<HistoryPageBean>) -> Unit,
+        fail: (Int) -> Unit
+    ) {
+        HttpClient.instance.getServer(NetApi::class.java)
+            .history(account)
+            .enqueue(object : Callback<HistoryResponse> {
+                override fun onResponse(
+                    call: Call<HistoryResponse>,
+                    response: Response<HistoryResponse>
+                ) {
+                    if (!response.isSuccessful) {
+                        mHandler.post {
+                            fail(100)
+                        }
+                        return
+                    }
+                    val body = response.body()
+                    if (body == null) {
+                        mHandler.post {
+                            fail(100)
+                        }
+                        return
+                    }
+                    //
+                    val res = body.res!!
+                    Log.d(TAG, "onResponse: res=$res")
+                    if (res == null) {
+                        mHandler.post {
+                            fail(body.code)
+                        }
+                        return
+                    }
+                    res.forEach {
+                        if (it!=null){
+                            HistoryUtils.insert(it)
+                        }
+                    }
+                    mHandler.post {
+                        success(res)
+                    }
+                }
+
+                override fun onFailure(call: Call<HistoryResponse>, t: Throwable) {
                     mHandler.post {
                         fail(100)
                     }

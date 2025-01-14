@@ -342,6 +342,7 @@ class MovieDetailActivity : AppCompatActivity() {
             Log.d(TAG, "onPause: progress=$progress")
             mMovie?.let {
                 val historyPageBean = convert(it)
+                historyPageBean.playDesInfo=null
                 historyPageBean.historySource = mCurrentRouteIndex
                 historyPageBean.historyEpIndex = mCurrentEpIndex
                 historyPageBean.historyProgress = progress

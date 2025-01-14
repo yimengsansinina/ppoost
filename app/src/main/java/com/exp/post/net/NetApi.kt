@@ -1,5 +1,8 @@
 package com.exp.post.net
 
+import com.exp.post.bean.CommitHistoryResponse
+import com.exp.post.bean.HistoryCommitRequest
+import com.exp.post.bean.HistoryResponse
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
 import com.exp.post.bean.LoginRequest
@@ -47,6 +50,10 @@ interface NetApi {
     @GET("maxSearchWords")
     fun maxSearchWords(): Call<MaxSearchResponse>
 
+    @GET("history")
+    fun history(@Query("account") account: String): Call<HistoryResponse>
+    @POST("commitHistory")
+    fun commitHistory(@Body p:HistoryCommitRequest): Call<CommitHistoryResponse>
     @GET("searchByKeyWords")
     fun searchByKeyWords(
         @Query("pg") pg: Int,

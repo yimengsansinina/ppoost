@@ -75,6 +75,12 @@ object SPTools {
         return MMKV.defaultMMKV().decodeString("account", null) ?: ""
     }
 
+    fun clear() {
+        MMKV.defaultMMKV().encode("password", "")
+//        MMKV.defaultMMKV().encode("account", "")
+        MMKV.defaultMMKV().encode("member_time", "")
+    }
+
     fun savePassword(password: String?) {
         MMKV.defaultMMKV().encode("password", password)
     }
@@ -91,13 +97,21 @@ object SPTools {
         return MMKV.defaultMMKV().decodeString("uuid", null) ?: ""
     }
 
-    fun saveFontSize(fontSize: Int) {
-        MMKV.defaultMMKV().encode("FontSize", fontSize)
+    fun saveLoginHistoryFlag(success: Boolean) {
+        MMKV.defaultMMKV().encode("LoginHistoryFlag", success)
     }
 
-    fun getFontSize(): Int {
-        return MMKV.defaultMMKV().decodeInt("FontSize", 21)
+    fun getLoginHistoryFlag(): Boolean {
+        return MMKV.defaultMMKV().decodeBool("LoginHistoryFlag", true)
     }
+
+    fun isLogin(): Boolean {
+        if (!TextUtils.isEmpty(getAccount()) && !TextUtils.isEmpty(getPassword())) {
+            return true
+        }
+        return false
+    }
+
 
     fun saveLittleNum(littleNum: Int) {
         MMKV.defaultMMKV().encode("littleNum", littleNum)

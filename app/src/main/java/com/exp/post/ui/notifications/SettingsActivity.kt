@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentActivity
 import com.exp.post.R
+import com.exp.post.tools.SPTools
 import com.exp.post.ui.WatchHistoryActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -82,7 +83,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        // TODO: 实现退出登录逻辑
+        SPTools.clear()
         Toast.makeText(this, "退出登录成功", Toast.LENGTH_SHORT).show()
         finish()
     }
