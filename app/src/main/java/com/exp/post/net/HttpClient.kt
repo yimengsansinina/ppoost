@@ -76,6 +76,7 @@ class HttpClient {
                 }
 
             })
+        builder.addInterceptor(HeaderKeyInterceptor())
         return builder.build()
     }
 
