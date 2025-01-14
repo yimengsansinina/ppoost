@@ -79,6 +79,7 @@ class MemberPayActivity : BaseActivity() {
         setContentView(_binding?.root)
         StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, null)
         StatusBarUtil.setLightMode(this)
+        supportActionBar?.hide()
         initUI()
     }
 
