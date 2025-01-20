@@ -1,6 +1,8 @@
 package com.exp.post.tools
 
 import android.text.TextUtils
+import com.exp.post.bean.LoginAppBean
+import com.exp.post.bean.PayEntity
 import com.exp.post.bean.PayInfo
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -135,5 +137,90 @@ object SPTools {
 
     fun getZhen(): Boolean {
         return MMKV.defaultMMKV().decodeBool("zhendong", true)
+    }
+
+    fun initPageList(pageList: List<LoginAppBean>?) {
+        if (pageList.isNullOrEmpty()){
+            return
+        }
+        MMKV.defaultMMKV().encode("PageList",  Gson().toJson(pageList))
+    }
+    fun getPageList(): List<LoginAppBean> {
+        return try {
+            val jsonString = MMKV.defaultMMKV().decodeString("PageList", "")
+            if (jsonString.isNullOrEmpty()) {
+                emptyList()
+            } else {
+                Gson().fromJson<List<LoginAppBean>>(
+                    jsonString,
+                    object : TypeToken<List<LoginAppBean>>() {}.type
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+
+    // 保存方法
+    fun initListInfoTextArr(listInfoTextArr: List<List<String>>?) {
+        if (listInfoTextArr.isNullOrEmpty()) {
+            MMKV.defaultMMKV().encode("ListInfoTextArr", "")
+            return
+        }
+        try {
+            MMKV.defaultMMKV().encode("ListInfoTextArr", Gson().toJson(listInfoTextArr))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // 获取方法
+    fun getListInfoTextArr(): List<List<String>> {
+        return try {
+            val jsonString = MMKV.defaultMMKV().decodeString("ListInfoTextArr", "")
+            if (jsonString.isNullOrEmpty()) {
+                emptyList()
+            } else {
+                Gson().fromJson<List<List<String>>>(
+                    jsonString,
+                    object : TypeToken<List<List<String>>>() {}.type
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    // 保存支付列表
+    fun initMemberPayList(memberPayList: List<PayEntity>?) {
+        if (memberPayList.isNullOrEmpty()) {
+            return
+        }
+        try {
+            MMKV.defaultMMKV().encode("MemberPayList", Gson().toJson(memberPayList))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // 获取支付列表
+    fun getMemberPayList(): List<PayEntity> {
+        return try {
+            val jsonString = MMKV.defaultMMKV().decodeString("MemberPayList", "")
+            if (jsonString.isNullOrEmpty()) {
+                emptyList()
+            } else {
+                Gson().fromJson<List<PayEntity>>(
+                    jsonString,
+                    object : TypeToken<List<PayEntity>>() {}.type
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
     }
 }

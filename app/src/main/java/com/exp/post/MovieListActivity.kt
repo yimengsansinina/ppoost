@@ -22,6 +22,7 @@ import com.exp.post.databinding.ActivityMovieListBinding
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.tools.AndroidUtils
+import com.exp.post.tools.SPTools
 import com.exp.post.ui.home.ShowFragment
 import com.jaeger.library.StatusBarUtil
 import retrofit2.Call
@@ -325,8 +326,8 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val adapter by lazy {
-        MovieListContentAdapter{
-            MovieDetailActivity.nav(this,it.id)
+        MovieListContentAdapter {
+            MovieDetailActivity.nav(this, it.id)
         }
     }
 
@@ -349,7 +350,10 @@ class MovieListActivity : AppCompatActivity() {
                     val col = pos % span
                     outRect.left = AndroidUtils.dp2px(15f) - col * AndroidUtils.dp2px(15f) / span
                     outRect.right = (col + 1) * AndroidUtils.dp2px(15f) / span
-                    Log.d(TAG, "getItemOffsets: left=${outRect.left},right=${outRect.right},pos=$pos,col=$col")
+                    Log.d(
+                        TAG,
+                        "getItemOffsets: left=${outRect.left},right=${outRect.right},pos=$pos,col=$col"
+                    )
                 }
             })
         }
@@ -398,7 +402,13 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private val listTitle1 by lazy {
-        arrayListOf("全部", "电影", "电视剧", "动漫", "综艺", "记录片")
+//        arrayListOf("全部", "电影", "电视剧", "动漫", "综艺", "记录片")
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("all", "mo", "tv", "dm", "zy", "record")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[0]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4], arr1[5])
+        }
     }
     private val listTitle4 by lazy {
         val year = Calendar.getInstance().get(Calendar.YEAR)
@@ -410,55 +420,91 @@ class MovieListActivity : AppCompatActivity() {
         list
     }
     private val listTitle2_1 by lazy {
-        arrayListOf(
-            "类型",
-            "动作片",
-            "喜剧片",
-            "爱情片",
-            "科幻片",
-            "恐怖片",
-            "剧情片",
-            "战争片",
-            "动画片"
-        )
+//        arrayListOf(
+//            "类型",
+//            "动作片",
+//            "喜剧片",
+//            "爱情片",
+//            "科幻片",
+//            "恐怖片",
+//            "剧情片",
+//            "战争片",
+//            "动画片"
+//        )
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("all", "dz", "xj", "love", "kh", "kb","jq","zz","dh")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[1]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4], arr1[5], arr1[6], arr1[7], arr1[8])
+        }
     }
     private val listTitle2_2 by lazy {
-        arrayListOf(
-            "类型",
-            "国产剧",
-            "香港剧",
-            "台湾剧",
-            "日本剧",
-            "韩国剧",
-            "欧美剧",
-            "泰国剧",
-            "海外剧"
-        )
+//        arrayListOf(
+//            "类型",
+//            "国产剧",
+//            "香港剧",
+//            "台湾剧",
+//            "日本剧",
+//            "韩国剧",
+//            "欧美剧",
+//            "泰国剧",
+//            "海外剧"
+//        )
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("all", "gc", "xg", "tw", "rb", "hj","om","tg","hw")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[2]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4], arr1[5], arr1[6], arr1[7], arr1[8])
+        }
     }
 
     private val listTitle2_3 by lazy {
-        arrayListOf("类型", "国产动漫", "日韩动漫", "欧美动漫", "港台动漫", "海外动漫")
+//        arrayListOf("类型", "国产动漫", "日韩动漫", "欧美动漫", "港台动漫", "海外动漫")
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("all", "gcdm", "rhdm", "omdm", "gtdm","hwdm")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[3]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4], arr1[5])
+        }
     }
     private val listTitle2_4 by lazy {
-        arrayListOf("类型", "大陆综艺", "港台综艺", "日韩综艺", "欧美综艺")
+//        arrayListOf("类型", "大陆综艺", "港台综艺", "日韩综艺", "欧美综艺")
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("all", "dlzy", "gtzy", "rhzy", "omzy")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[4]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4])
+        }
     }
     private val listTitle2_5 by lazy {
-        arrayListOf("类型", "记录片")
+//        arrayListOf("类型", "记录片")
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("lx", "jlp")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[5]
+            arrayListOf(arr1[0], arr1[1])
+        }
     }
     private val listTitle3 by lazy {
-        arrayListOf(
-            "地区",
-            "大陆",
-            "香港",
-            "台湾",
-            "日本",
-            "韩国",
-            "美国",
-            "英国",
-            "法国",
-            "泰国",
-            "印度"
-        )
+//        arrayListOf(
+//            "地区",
+//            "大陆",
+//            "香港",
+//            "台湾",
+//            "日本",
+//            "韩国",
+//            "美国",
+//            "英国",
+//            "法国",
+//            "泰国",
+//            "印度"
+//        )
+        if (SPTools.getListInfoTextArr().isEmpty()) {
+            arrayListOf("dq", "dl", "xg", "tw", "rb","hg","mg","yg","fg","tg","yd")
+        } else {
+            val arr1 = SPTools.getListInfoTextArr()[6]
+            arrayListOf(arr1[0], arr1[1], arr1[2], arr1[3], arr1[4], arr1[5], arr1[6], arr1[7], arr1[8], arr1[9], arr1[10])
+        }
     }
 
     private fun initView() {

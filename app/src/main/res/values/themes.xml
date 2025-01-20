@@ -23,4 +23,35 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+
+    <style name="UpdateDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/UpdateDialogTitle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/UpdateDialogBody</item>
+        <item name="buttonBarPositiveButtonStyle">@style/UpdateDialogPositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/UpdateDialogNegativeButton</item>
+    </style>
+
+    <style name="UpdateDialogTitle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="UpdateDialogBody" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">#666666</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+    <style name="UpdateDialogPositiveButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="UpdateDialogNegativeButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">#999999</item>
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>

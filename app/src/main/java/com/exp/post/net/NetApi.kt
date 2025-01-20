@@ -5,11 +5,14 @@ import com.exp.post.bean.HistoryCommitRequest
 import com.exp.post.bean.HistoryResponse
 import com.exp.post.bean.HomePageRequest
 import com.exp.post.bean.HomePageResponse
+import com.exp.post.bean.LoginAppResponse
 import com.exp.post.bean.LoginRequest
 import com.exp.post.bean.LoginResponse
 import com.exp.post.bean.MaxSearchResponse
 import com.exp.post.bean.MovieInfoRequest
 import com.exp.post.bean.MovieInfoResponse
+import com.exp.post.bean.MovieListLittleRequest
+import com.exp.post.bean.MovieListLittleResponse
 import com.exp.post.bean.MovieListRequest
 import com.exp.post.bean.MovieListResponse
 import com.exp.post.bean.SearchResultResponse
@@ -43,12 +46,16 @@ interface NetApi {
 //    @Headers("Cache-Control: no-cache")
     @POST("queryMovieList")
     fun queryMovieList(@Body p: MovieListRequest): Call<MovieListResponse>
+    @POST("queryMovieLittleList")
+    fun queryMovieListLittle(@Body p: MovieListLittleRequest): Call<MovieListLittleResponse>
 
     @POST("movieInfo")
     fun movieInfo(@Body p: MovieInfoRequest): Call<MovieInfoResponse>
 
     @GET("maxSearchWords")
     fun maxSearchWords(): Call<MaxSearchResponse>
+    @GET("loginApp")
+    fun loginApp(): Call<LoginAppResponse>
 
     @GET("history")
     fun history(@Query("account") account: String): Call<HistoryResponse>

@@ -53,6 +53,7 @@
         <activity android:name=".ui.notifications.MemberPayActivity" />
         <activity android:name=".ui.notifications.SettingsActivity" />
         <activity android:name=".ui.notifications.AboutActivity" />
+        <activity android:name=".ui.MovieListLittleActivity" />
     </application>
 
 

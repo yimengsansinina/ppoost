@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.exp.post.databinding.FragmentHomeBinding
+import com.exp.post.tools.SPTools
 import com.exp.post.ui.SearchActivity
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems
@@ -44,15 +45,29 @@ class HomeFragment : Fragment() {
         binding.searchFl.setOnClickListener {
             SearchActivity.nav(requireActivity())
         }
-        val adapter = FragmentPagerItemAdapter(
-            childFragmentManager, FragmentPagerItems.with(activity)
-                .add("电视剧", ShowFragment::class.java, bundleOf("topC" to 2))
-                .add("电影", ShowFragment::class.java, bundleOf("topC" to 1))
-                .add("动漫", ShowFragment::class.java, bundleOf("topC" to 3))
-                .add("综艺", ShowFragment::class.java, bundleOf("topC" to 4))
-                .add("记录片", ShowFragment::class.java, bundleOf("topC" to 5))
-                .create()
-        )
+        val pageList = SPTools.getPageList()
+        val adapter = if (pageList.isNotEmpty() ) {
+            val with = FragmentPagerItems.with(activity)
+            pageList.forEach {loginAppBean ->
+                with.add(
+                    loginAppBean.title,
+                    ShowFragment::class.java,
+                    bundleOf("topC" to loginAppBean.topC)
+                )
+            }
+            FragmentPagerItemAdapter(childFragmentManager,with.create())
+        } else {
+            FragmentPagerItemAdapter(
+                childFragmentManager, FragmentPagerItems.with(activity)
+                    .add("tv", ShowFragment::class.java, bundleOf("topC" to 2))
+                    .add("mov", ShowFragment::class.java, bundleOf("topC" to 1))
+                    .add("dm", ShowFragment::class.java, bundleOf("topC" to 3))
+                    .add("zy", ShowFragment::class.java, bundleOf("topC" to 4))
+                    .add("record", ShowFragment::class.java, bundleOf("topC" to 5))
+                    .create()
+            )
+        }
+
         binding.viewpager.offscreenPageLimit = 5
         binding.viewpager.adapter = adapter
 
