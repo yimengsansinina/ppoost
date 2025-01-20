@@ -44,27 +44,27 @@ class MemberPayActivity : BaseActivity() {
     private fun getSuByType(type: Int): String {
         return when (type) {
             1 -> {
-                "cal_hui1"
+                "post_hui1"
             }
 
             3 -> {
-                "cal_hui3"
+                "post_hui3"
             }
 
             6 -> {
-                "cal_hui6"
+                "post_hui6"
             }
 
             12 -> {
-                "cal_hui12"
+                "post_hui12"
             }
 
             100 -> {
-                "cal_hui100"
+                "post_hui100"
             }
 
             else -> {
-                "cal_hui1"
+                "post_hui1"
             }
         }
     }
@@ -301,9 +301,9 @@ class MemberPayActivity : BaseActivity() {
         }
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        buySever(1)
-//
-//    }
+    override fun onResume() {
+        super.onResume()
+        buySever(3)
+
+    }
 }

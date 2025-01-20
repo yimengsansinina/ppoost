@@ -1,6 +1,9 @@
 
 package com.exp.post.ui.notifications
+import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -58,6 +61,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun clearCache() {
+        findViewById<CardView>(R.id.cvVersion)?.postDelayed({
+            Toast.makeText(this, "清理完成", Toast.LENGTH_SHORT).show()
+        },500)
         Toast.makeText(this, "正在清理缓存...", Toast.LENGTH_SHORT).show()
     }
     companion object {
@@ -67,8 +73,24 @@ class SettingsActivity : AppCompatActivity() {
             activity.startActivity(intent)
         }
     }
+    private fun openPlayStore(context: Context) {
+        try {
+            val packageName = getPackageName()
+            // 尝试打开 Play 商店应用
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("market://details?id=$packageName")
+            }
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            // 如果没有安装 Play 商店应用，则打开网页版
+            val webIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+            }
+            context.startActivity(webIntent)
+        }
+    }
     private fun checkUpdate() {
-        Toast.makeText(this, "检查更新中...", Toast.LENGTH_SHORT).show()
+        openPlayStore(this)
     }
 
     private fun showLogoutDialog() {

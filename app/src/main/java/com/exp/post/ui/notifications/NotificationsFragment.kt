@@ -3,6 +3,7 @@ package com.exp.post.ui.notifications
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import com.exp.post.user.LoginFragment
 import com.exp.post.databinding.FragmentNotificationsBinding
 import com.exp.post.tools.SPTools
 import com.exp.post.ui.WatchHistoryActivity
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
@@ -36,6 +38,7 @@ class NotificationsFragment : Fragment() {
     }
 
     private fun initView() {
+        EventBus.getDefault().register(this)
         binding.historyTv.setOnClickListener {
             WatchHistoryActivity.nav(requireActivity())
         }
@@ -73,6 +76,7 @@ class NotificationsFragment : Fragment() {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onLoginEvent(event: LoginEvent) {
+        Log.d("TAG", "onLoginEvent() called with: event = $event")
         initLoginUI()
     }
     private fun initLoginUI() {
@@ -122,6 +126,7 @@ class NotificationsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        EventBus.getDefault().unregister(this)
         _binding = null
     }
     public fun showRegister() {
