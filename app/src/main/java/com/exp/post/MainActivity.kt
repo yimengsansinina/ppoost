@@ -18,7 +18,7 @@ import com.exp.post.bean.InitAppBeanLittle
 import com.exp.post.bean.LoginAppBean
 import com.exp.post.bean.LoginAppResponse
 import com.exp.post.bean.MessageInfo
-import com.exp.post.bean.PayEntity
+import com.exp.post.bean.PayInfo
 import com.exp.post.bean.UpgradeVersion
 import com.exp.post.databinding.ActivityMainBinding
 import com.exp.post.dbs.HistoryPageBean
@@ -109,8 +109,8 @@ class MainActivity : AppCompatActivity() {
         SPTools.initListInfoTextArr(listInfoTextArr)
     }
 
-    private fun initMemberPayList(memberPayList: List<PayEntity>?) {
-        SPTools.initMemberPayList(memberPayList)
+    private fun initMemberPayList(memberPayList: List<PayInfo>?) {
+        SPTools.saveMemberPayList(memberPayList)
     }
 
     private fun initMessage(messageInfo: MessageInfo?) {

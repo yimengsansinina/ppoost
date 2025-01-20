@@ -1,7 +1,7 @@
 package com.exp.post.bean
 
 class InitAppBeanLittle {
-    var memberPayList: List<PayEntity>? = null
+    var memberPayList: List<PayInfo>? = null
     var pageList: List<LoginAppBean>? = null
     var listInfoTextArr: List<List<String>>? = null
     var messageInfo: MessageInfo? = null
