@@ -3,6 +3,7 @@ package com.exp.post
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -29,9 +30,11 @@ import com.exp.post.tools.MessageManager
 import com.exp.post.tools.SPTools
 import com.exp.post.tools.UpdateManager
 import com.exp.post.ui.MovieListLittleActivity
+import com.exp.post.user.LoginFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -210,6 +213,7 @@ class MainActivity : AppCompatActivity() {
         val request = HistoryCommitRequest()
         request.account = account
         request.data = Gson().toJson(selectAll)
+        Log.d(TAG, "historyCommit: Gson().toJson(selectAll)=${request.data}")
         HttpClient.instance.getServer(NetApi::class.java)
             .commitHistory(request)
             .enqueue(object : Callback<CommitHistoryResponse> {
@@ -250,10 +254,23 @@ class MainActivity : AppCompatActivity() {
 
             })
     }
+    fun parseHistoryList(jsonString: String?): List<HistoryPageBean> {
+        if (TextUtils.isEmpty(jsonString)) {
+            return emptyList() // 转换失败返回空列表
+        }
+        val gson = Gson()
+        val type = object : TypeToken<List<HistoryPageBean>>() {}.type
+        return try {
+            gson.fromJson(jsonString, type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList() // 转换失败返回空列表
+        }
+    }
 
     private fun history(
         account: String,
-        success: (List<HistoryPageBean>) -> Unit,
+        success: () -> Unit,
         fail: (Int) -> Unit
     ) {
         HttpClient.instance.getServer(NetApi::class.java)
@@ -263,6 +280,7 @@ class MainActivity : AppCompatActivity() {
                     call: Call<HistoryResponse>,
                     response: Response<HistoryResponse>
                 ) {
+                    Log.d(TAG, "onResponse: ${response.isSuccessful}")
                     if (!response.isSuccessful) {
                         mHandler.post {
                             fail(100)
@@ -277,25 +295,20 @@ class MainActivity : AppCompatActivity() {
                         return
                     }
                     //
-                    val res = body.res!!
-                    Log.d(TAG, "onResponse: res=$res")
-                    if (res == null) {
-                        mHandler.post {
-                            fail(body.code)
-                        }
-                        return
-                    }
-                    res.forEach {
-                        if (it != null) {
-                            HistoryUtils.insert(it)
-                        }
+                    val res = body.res
+
+                    val list = parseHistoryList(res)
+                    Log.d(TAG, "onResponse: res=$res,list=${list.size}")
+                    list.forEach { bean ->
+                        HistoryUtils.insert(bean)
                     }
                     mHandler.post {
-                        success(res)
+                        success()
                     }
                 }
 
                 override fun onFailure(call: Call<HistoryResponse>, t: Throwable) {
+                    Log.d(TAG, "onFailure() called with: call = $call, t = ${t.message}")
                     mHandler.post {
                         fail(100)
                     }

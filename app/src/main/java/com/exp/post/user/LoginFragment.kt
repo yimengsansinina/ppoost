@@ -37,6 +37,8 @@ import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.tools.SPTools
 import com.exp.post.ui.notifications.NotificationsFragment
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
@@ -107,7 +109,10 @@ class LoginFragment : DialogFragment() {
                 // 点击"世界"时的操作
                 val intent = Intent()
 
-                intent.putExtra("url", "https://docs.google.com/document/d/1g2kmRRk-hw3JQxAj5RJU6bR-GT1sDXrN-2wj5LS6bXY/edit?hl=zh-cn&pli=1#heading=h.bmfkudbe7avy")
+                intent.putExtra(
+                    "url",
+                    "https://docs.google.com/document/d/1g2kmRRk-hw3JQxAj5RJU6bR-GT1sDXrN-2wj5LS6bXY/edit?hl=zh-cn&pli=1#heading=h.bmfkudbe7avy"
+                )
                 intent.putExtra("title", "隱私政策")
                 intent.setClass(requireActivity(), UserRememberActivity::class.java)
                 startActivity(intent)
@@ -141,7 +146,10 @@ class LoginFragment : DialogFragment() {
             }
             loadingView.visibility = View.VISIBLE
             login(account, password, {
-                Log.d(TAG, "onViewCreated:login success,uuid=${it.uuid},memberTime=${it.memberTime}")
+                Log.d(
+                    TAG,
+                    "onViewCreated:login success,uuid=${it.uuid},memberTime=${it.memberTime}"
+                )
                 loadingView.visibility = View.GONE
                 SPTools.saveAccount(account)
                 SPTools.savePassword(password)
@@ -170,11 +178,14 @@ class LoginFragment : DialogFragment() {
             })
         }
     }
-    private fun historyGet(account: String){
+
+    private fun historyGet(account: String) {
+        Log.d(TAG, "historyGet() called with: account = $account")
         SPTools.saveLoginHistoryFlag(false)
-        history(account,{
-              SPTools.saveLoginHistoryFlag(true)
-        },{
+        history(account, {
+            Log.d(TAG, "historyGet: 历史记录size")
+            SPTools.saveLoginHistoryFlag(true)
+        }, {
             SPTools.saveLoginHistoryFlag(false)
         })
     }
@@ -236,8 +247,8 @@ class LoginFragment : DialogFragment() {
         fail: (Int) -> Unit
     ) {
         val bean = LoginRequest()
-        bean.account=account
-        bean.password=password
+        bean.account = account
+        bean.password = password
         HttpClient.instance.getServer(NetApi::class.java)
             .login(bean)
             .enqueue(object : Callback<LoginResponse> {
@@ -279,9 +290,23 @@ class LoginFragment : DialogFragment() {
             })
     }
 
+    fun parseHistoryList(jsonString: String?): List<HistoryPageBean> {
+        if (TextUtils.isEmpty(jsonString)) {
+            return emptyList() // 转换失败返回空列表
+        }
+        val gson = Gson()
+        val type = object : TypeToken<List<HistoryPageBean>>() {}.type
+        return try {
+            gson.fromJson(jsonString, type)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList() // 转换失败返回空列表
+        }
+    }
+
     private fun history(
         account: String,
-        success: (List<HistoryPageBean>) -> Unit,
+        success: () -> Unit,
         fail: (Int) -> Unit
     ) {
         HttpClient.instance.getServer(NetApi::class.java)
@@ -291,6 +316,7 @@ class LoginFragment : DialogFragment() {
                     call: Call<HistoryResponse>,
                     response: Response<HistoryResponse>
                 ) {
+                    Log.d(TAG, "onResponse: ${response.isSuccessful}")
                     if (!response.isSuccessful) {
                         mHandler.post {
                             fail(100)
@@ -305,25 +331,20 @@ class LoginFragment : DialogFragment() {
                         return
                     }
                     //
-                    val res = body.res!!
-                    Log.d(TAG, "onResponse: res=$res")
-                    if (res == null) {
-                        mHandler.post {
-                            fail(body.code)
-                        }
-                        return
-                    }
-                    res.forEach {
-                        if (it!=null){
-                            HistoryUtils.insert(it)
-                        }
+                    val res = body.res
+
+                    val list = parseHistoryList(res)
+                    Log.d(TAG, "onResponse: res=$res,list=${list.size}")
+                    list.forEach { bean ->
+                        HistoryUtils.insert(bean)
                     }
                     mHandler.post {
-                        success(res)
+                        success()
                     }
                 }
 
                 override fun onFailure(call: Call<HistoryResponse>, t: Throwable) {
+                    Log.d(TAG, "onFailure() called with: call = $call, t = ${t.message}")
                     mHandler.post {
                         fail(100)
                     }

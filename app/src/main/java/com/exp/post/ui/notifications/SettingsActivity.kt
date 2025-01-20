@@ -97,9 +97,13 @@ class SettingsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("提示")
             .setMessage("确定要退出登录吗？")
-            .setNegativeButton("取消", null)
-            .setPositiveButton("确定") { _, _ ->
+            .setNegativeButton("取消"){dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("确定") { dialog, _ ->
                 logout()
+                dialog.dismiss()
+                finish()
             }
             .show()
     }

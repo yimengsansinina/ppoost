@@ -5,5 +5,6 @@ import com.exp.post.dbs.PageBean
 
 class HistoryResponse {
     var code=0
-    var res:List<HistoryPageBean>?=null
+//    var res:List<HistoryPageBean>?=null
+    var res:String?=null
 }
