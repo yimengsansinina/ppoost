@@ -82,6 +82,8 @@ dependencies {
     implementation  ("com.android.billingclient:billing:7.0.0")
     implementation  ("com.android.billingclient:billing-ktx:7.0.0")
     implementation ("com.wrapp.floatlabelededittext:library:0.0.6")
+    // Lottie动画库
+    implementation ("com.airbnb.android:lottie:6.4.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

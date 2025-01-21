@@ -43,10 +43,21 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private fun initMessage(messageInfo: MessageInfo?) {
+        MessageManager.handleMessageInfo(this, messageInfo)
+    }
 
+    private fun initUpgradeVersion(upgradeVersion: UpgradeVersion?) {
+        UpdateManager.checkUpdate(this, upgradeVersion)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginApp()
+        intent?.let {
+          val upgradeVersion=  it.getParcelableExtra<UpgradeVersion>("upgradeVersion")
+          val messageInfo=  it.getParcelableExtra<MessageInfo>("messageInfo")
+            initMessage(messageInfo)
+            initUpgradeVersion(upgradeVersion)
+        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -89,91 +100,6 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         historyCommitPOST()
-    }
-
-    private fun loginApp() {
-        loginAppNet({
-            Log.d(TAG, "loginApp() called,success,it=$it")
-            initUpgradeVersion(it.upgradeVersion)
-            initMessage(it.messageInfo)
-            initMemberPayList(it.memberPayList)
-            initListInfoTextArr(it.listInfoTextArr)
-            initPageList(it.pageList)
-        }, {
-            Log.d(TAG, "loginApp() error=$it")
-        })
-    }
-
-    private fun initPageList(pageList: List<LoginAppBean>?) {
-        SPTools.initPageList(pageList)
-    }
-
-    private fun initListInfoTextArr(listInfoTextArr: List<List<String>>?) {
-        SPTools.initListInfoTextArr(listInfoTextArr)
-    }
-
-    private fun initMemberPayList(memberPayList: List<PayInfo>?) {
-        SPTools.saveMemberPayList(memberPayList)
-    }
-
-    private fun initMessage(messageInfo: MessageInfo?) {
-        MessageManager.handleMessageInfo(this, messageInfo)
-    }
-
-    private fun initUpgradeVersion(upgradeVersion: UpgradeVersion?) {
-        UpdateManager.checkUpdate(this, upgradeVersion)
-    }
-
-    private fun loginAppNet(
-        success: (InitAppBeanLittle) -> Unit,
-        fail: (Int) -> Unit
-    ) {
-        HttpClient.instance.getServer(NetApi::class.java)
-            .loginApp()
-            .enqueue(object : Callback<LoginAppResponse> {
-                override fun onResponse(
-                    call: Call<LoginAppResponse>,
-                    response: Response<LoginAppResponse>
-                ) {
-                    if (!response.isSuccessful) {
-                        mHandler.post {
-                            fail(101)
-                        }
-                        return
-                    }
-                    val body = response.body()
-                    if (body == null) {
-                        mHandler.post {
-                            fail(102)
-                        }
-                        return
-                    }
-                    //
-                    if (body.code != 0) {
-                        mHandler.post {
-                            fail(body.code)
-                        }
-                        return
-                    }
-                    if (body.res == null) {
-                        mHandler.post {
-                            fail(103)
-                        }
-                        return
-                    }
-                    mHandler.post {
-                        success(body.res!!)
-                    }
-                }
-
-                override fun onFailure(call: Call<LoginAppResponse>, t: Throwable) {
-                    Log.d(TAG, "onFailure() called with: call = $call, t = ${t.message}")
-                    mHandler.post {
-                        fail(104)
-                    }
-                }
-
-            })
     }
 
     private fun historyCommitPOST() {
