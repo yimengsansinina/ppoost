@@ -10,7 +10,7 @@ import com.exp.post.bean.EpBean
 import com.exp.post.tools.AndroidUtils
 
 class EpisodeAdapter(
-    private var selectedPosition: Int = -1,
+     var selectedPosition: Int = -1,
     private val onItemClick: (Int,EpBean) -> Unit
 ) : RecyclerView.Adapter<EpisodeAdapter.ViewHolder>() {
 

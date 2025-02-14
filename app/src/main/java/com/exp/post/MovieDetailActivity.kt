@@ -175,6 +175,7 @@ class MovieDetailActivity : AppCompatActivity() {
             return
         }
         val playList = mMovie!!.playList
+        // playList=[, 全集@@@https://v5.daayee.com/yyv5/202501/20/6EFHAzhYEr19/video/index.m3u8, , , , , , ]
         Log.d(TAG, "initRecycler() playList=$playList")
         if (playList.isNullOrEmpty()) {
             return
@@ -182,16 +183,16 @@ class MovieDetailActivity : AppCompatActivity() {
         playList.forEachIndexed { index, s ->
             if (!TextUtils.isEmpty(s)) {
                 fetchBeanList(index, s)
-                routeList.add(index)
+                routeIndexList.add(index)
             }
         }
-        if (!routeList.contains(mCurrentRouteIndex)) {
-            if (routeList.isNotEmpty()){
-                mCurrentRouteIndex=routeList[0]
+        if (!routeIndexList.contains(mCurrentRouteIndex)) {
+            if (routeIndexList.isNotEmpty()) {
+                mCurrentRouteIndex = routeIndexList[0]
             }
         }
 
-        Log.d(TAG, "initRecycler: routeList=$routeList")
+        Log.d(TAG, "initRecycler: routeList=$routeIndexList")
         initRouteRv()
         val bean = initEpRv()
         bean?.run {
@@ -202,9 +203,6 @@ class MovieDetailActivity : AppCompatActivity() {
     }
 
     private fun initEpRv(): EpBean? {
-        if (mCurrentRouteIndex > routeMap.size - 1 || mCurrentRouteIndex < 0) {
-            return null
-        }
         val epBean = routeMap[mCurrentRouteIndex]
         if (epBean == null) {
             return null
@@ -222,7 +220,8 @@ class MovieDetailActivity : AppCompatActivity() {
         return epBean[mCurrentEpIndex]
     }
 
-    private val routeList by lazy {
+    // routeList=[1]
+    private val routeIndexList by lazy {
         arrayListOf<Int>()
     }
     private val routeAdapter by lazy {
@@ -231,14 +230,14 @@ class MovieDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun clickRoute(pos: Int) {
-        if (pos == mCurrentRouteIndex) {
+    private fun clickRoute(routeIndex: Int) {
+        if (routeIndex == mCurrentRouteIndex) {
             return
         }
 //        if (pos > routeMap.size - 1 || pos < 0) {
 //            return
 //        }
-        val epBeans = routeMap[pos]
+        val epBeans = routeMap[routeIndex]
         if (epBeans == null) {
             return
         }
@@ -247,7 +246,7 @@ class MovieDetailActivity : AppCompatActivity() {
                 LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
             binding.recyclerView.adapter = epAdapter
         }
-        mCurrentRouteIndex = pos
+        mCurrentRouteIndex = routeIndex
         epAdapter.setList(epBeans)
         //
         if (mCurrentEpIndex >= 0 && mCurrentEpIndex < epBeans.size) {
@@ -276,6 +275,7 @@ class MovieDetailActivity : AppCompatActivity() {
 
     private fun clickEp(epBean: EpBean, playTime: Long) {
         mCurrentProgress = playTime
+        Log.d(TAG, "clickEp: setUp=${epBean.epUrl}")
         mVideoView.setUp(
             epBean.epUrl,
             epBean.name + "," + epBean.epName
@@ -284,6 +284,7 @@ class MovieDetailActivity : AppCompatActivity() {
         mVideoView.startVideo()
     }
 
+    //route索引
     private var mCurrentRouteIndex = 0
     private var mCurrentProgress = 0L
     private var mCurrentEpIndex = 0
@@ -292,10 +293,10 @@ class MovieDetailActivity : AppCompatActivity() {
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.routeRecyclerView.adapter = routeAdapter
         routeAdapter.checkIndex = mCurrentRouteIndex
-        routeAdapter.setList(routeList)
+        routeAdapter.setList(routeIndexList)
     }
 
-
+    //key为1,value剧集
     private val routeMap = HashMap<Int, List<EpBean>>()
     private fun fetchBeanList(index: Int, playUrl: String) {
         val arr = playUrl.split("\r\n")
@@ -343,7 +344,7 @@ class MovieDetailActivity : AppCompatActivity() {
             Log.d(TAG, "onPause: progress=$progress")
             mMovie?.let {
                 val historyPageBean = convert(it)
-                historyPageBean.playDesInfo=null
+                historyPageBean.playDesInfo = null
                 historyPageBean.historySource = mCurrentRouteIndex
                 historyPageBean.historyEpIndex = mCurrentEpIndex
                 historyPageBean.historyProgress = progress
@@ -474,11 +475,11 @@ class MovieDetailActivity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
         }
 
-        val adapter1 = EpisodeAdapter(5) { position,item ->
+        val adapter1 = EpisodeAdapter(5) { position, item ->
             Log.d(TAG, "showDesContent() called with: position = $position,item=$item")
 
             if (position == mCurrentEpIndex) {
-               return@EpisodeAdapter
+                return@EpisodeAdapter
             }
             mCurrentEpIndex = position
             clickEp(item, 0)
@@ -489,12 +490,10 @@ class MovieDetailActivity : AppCompatActivity() {
             adapter = adapter1
             addItemDecoration(GradleItemDecord())
         }
-
+        adapter1.selectedPosition=mCurrentEpIndex
         // 生成集数列表
-        if (mCurrentRouteIndex >= 0 && mCurrentRouteIndex < routeMap.size) {
-            val epBean = routeMap[mCurrentRouteIndex]
-            epBean?.let { adapter1.updateData(it) }
-        }
+        val epBean = routeMap[mCurrentRouteIndex]
+        epBean?.let { adapter1.updateData(it) }
         bottomSheetDialog.show()
     }
 
