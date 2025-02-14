@@ -483,6 +483,8 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             mCurrentEpIndex = position
             clickEp(item, 0)
+            epAdapter.checkPos=mCurrentEpIndex
+            epAdapter.notifyDataSetChanged()
         }
 
         bottomSheetView.findViewById<RecyclerView>(R.id.recyclerView)?.apply {

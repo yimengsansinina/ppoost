@@ -19,13 +19,13 @@
     android:layout_height="wrap_content">
     <View
         android:background="@drawable/ic_back"
-        android:layout_width="24dp"
-        android:layout_height="24dp"/>
+        android:layout_width="22dp"
+        android:layout_height="22dp"/>
 
 </FrameLayout>
         <TextView
+            android:textColor="@color/black"
             android:id="@+id/name_title"
-            android:text="@string/app_name"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
