@@ -52,11 +52,13 @@ class MovieListLittleActivity : AppCompatActivity() {
     }
 
     private var pos1 = 0
-//    private var pos2 = 0
+
+    //    private var pos2 = 0
 //    private var pos3 = 0
     private var pos4 = 0
-    private var rank = "0"
-//    private var movieModle: String? = null
+    private var littleType = 0
+
+    //    private var movieModle: String? = null
 //    private var areaModle: String? = null
     private var yearModle: String? = null
     private val adapter1 by lazy {
@@ -66,237 +68,13 @@ class MovieListLittleActivity : AppCompatActivity() {
             if (id == pos1) {
                 return@MovieListAdapter
             }
-            rank = id.toString()
-//            adapter2.checkPos = 0
-//            movieModle = null
-//            when (id) {
-//                0 -> {
-//                    adapter2.setList(list2_1)
-//                }
-//
-//                1 -> {
-//                    adapter2.setList(list2_1)
-//                }
-//
-//                2 -> {
-//                    adapter2.setList(list2_2)
-//                }
-//
-//                3 -> {
-//                    adapter2.setList(list2_3)
-//                }
-//
-//                4 -> {
-//                    adapter2.setList(list2_4)
-//                }
-//
-//                else -> {
-//                    adapter2.setList(list2_5)
-//                }
-//            }
+            littleType = id
             pos1 = id
-            //
             //reequest
             postNet(false)
         }
     }
 
-//    private val adapter2 by lazy {
-//        MovieListAdapter {
-//            Log.d(TAG, "adapter2() called it.pos=${it.id}")
-//            val id = it.id
-//            if (id == pos2) {
-//                return@MovieListAdapter
-//            }
-//            pos2 = id
-//            movieModle = when (pos1) {
-//                0, 1 -> {
-//                    when (id) {
-//                        0 -> {
-//                            null
-//                        }
-//
-//                        1 -> {
-//                            "121"
-//                        }
-//
-//                        2 -> {
-//                            "122"
-//                        }
-//
-//                        3 -> {
-//                            "123"
-//                        }
-//
-//                        4 -> {
-//                            "124"
-//                        }
-//
-//                        5 -> {
-//                            "125"
-//                        }
-//
-//                        6 -> {
-//                            "126"
-//                        }
-//
-//                        7 -> {
-//                            "127"
-//                        }
-//
-//                        8 -> {
-//                            "157"
-//                        }
-//
-//                        else -> {
-//                            "157"
-//                        }
-//                    }
-//                }
-//
-//                2 -> {
-//                    when (id) {
-//                        0 -> {
-//                            null
-//                        }
-//
-//                        1 -> {
-//                            "128"
-//                        }
-//
-//                        2 -> {
-//                            "129"
-//                        }
-//
-//                        3 -> {
-//                            "130"
-//                        }
-//
-//                        4 -> {
-//                            "131"
-//                        }
-//
-//                        5 -> {
-//                            "132"
-//                        }
-//
-//                        6 -> {
-//                            "133"
-//                        }
-//
-//                        7 -> {
-//                            "134"
-//                        }
-//
-//                        8 -> {
-//                            "170"
-//                        }
-//
-//                        else -> {
-//                            "170"
-//                        }
-//                    }
-//                }
-//
-//                3 -> {
-//                    when (id) {
-//                        0 -> {
-//                            null
-//                        }
-//
-//                        1 -> {
-//                            "182"
-//                        }
-//
-//                        2 -> {
-//                            "183"
-//                        }
-//
-//                        3 -> {
-//                            "184"
-//                        }
-//
-//                        4 -> {
-//                            "185"
-//                        }
-//
-//                        5 -> {
-//                            "186"
-//                        }
-//
-//                        else -> {
-//                            "186"
-//                        }
-//                    }
-//                }
-//
-//                4 -> {
-//                    when (id) {
-//                        0 -> {
-//                            null
-//                        }
-//
-//                        1 -> {
-//                            "178"
-//                        }
-//
-//                        2 -> {
-//                            "179"
-//                        }
-//
-//                        3 -> {
-//                            "180"
-//                        }
-//
-//                        4 -> {
-//                            "181"
-//                        }
-//
-//                        else -> {
-//                            "181"
-//                        }
-//                    }
-//                }
-//
-//                5 -> {
-//                    "136"
-//                }
-//
-//                else -> {
-//                    "121"
-//                }
-//            }
-//            Log.d(
-//                TAG,
-//                "adapter2() called movieModle=$movieModle,areaModle=${areaModle},yearModle=${yearModle}"
-//            )
-//            postNet(false)
-//        }
-//    }
-//    private val adapter3 by lazy {
-//        MovieListAdapter {
-//            Log.d(TAG, "adapter3() called it.pos=${it.id}")
-//            val id = it.id
-//            if (id == pos3) {
-//                return@MovieListAdapter
-//            }
-//            areaModle = when (id) {
-//                0 -> {
-//                    null
-//                }
-//
-//                else -> {
-//                    id.toString()
-//                }
-//            }
-//            Log.d(
-//                TAG,
-//                "adapter3() called movieModle=$movieModle,areaModle=${areaModle},yearModle=${yearModle}"
-//            )
-//            pos3 = id
-//            postNet(false)
-//        }
-//    }
     private val adapter4 by lazy {
         MovieListAdapter {
             Log.d(TAG, "adapter4() called it.pos=${it.id}")
@@ -326,8 +104,8 @@ class MovieListLittleActivity : AppCompatActivity() {
         }
     }
     private val adapter by lazy {
-        MovieListContentAdapter{
-            MovieDetailActivity.nav(this,it.id)
+        MovieListContentAdapter {
+            MovieDetailActivity.nav(this, it.id)
         }
     }
 
@@ -350,7 +128,10 @@ class MovieListLittleActivity : AppCompatActivity() {
                     val col = pos % span
                     outRect.left = AndroidUtils.dp2px(15f) - col * AndroidUtils.dp2px(15f) / span
                     outRect.right = (col + 1) * AndroidUtils.dp2px(15f) / span
-                    Log.d(TAG, "getItemOffsets: left=${outRect.left},right=${outRect.right},pos=$pos,col=$col")
+                    Log.d(
+                        TAG,
+                        "getItemOffsets: left=${outRect.left},right=${outRect.right},pos=$pos,col=$col"
+                    )
                 }
             })
         }
@@ -399,7 +180,7 @@ class MovieListLittleActivity : AppCompatActivity() {
     }
 
     private val listTitle1 by lazy {
-        arrayListOf("全部", "热度", "评分")
+        arrayListOf("全部", "都市", "爽文", "反转", "恋爱", "仙侠", "穿越", "悬疑")
     }
     private val listTitle4 by lazy {
         val year = Calendar.getInstance().get(Calendar.YEAR)
@@ -407,59 +188,8 @@ class MovieListLittleActivity : AppCompatActivity() {
         for (index in year downTo 2009) {
             list.add(index.toString())
         }
-        list.add("更早")
+        list.add("之前")
         list
-    }
-    private val listTitle2_1 by lazy {
-        arrayListOf(
-            "类型",
-            "动作片",
-            "喜剧片",
-            "爱情片",
-            "科幻片",
-            "恐怖片",
-            "剧情片",
-            "战争片",
-            "动画片"
-        )
-    }
-    private val listTitle2_2 by lazy {
-        arrayListOf(
-            "类型",
-            "国产剧",
-            "香港剧",
-            "台湾剧",
-            "日本剧",
-            "韩国剧",
-            "欧美剧",
-            "泰国剧",
-            "海外剧"
-        )
-    }
-
-    private val listTitle2_3 by lazy {
-        arrayListOf("类型", "国产动漫", "日韩动漫", "欧美动漫", "港台动漫", "海外动漫")
-    }
-    private val listTitle2_4 by lazy {
-        arrayListOf("类型", "大陆综艺", "港台综艺", "日韩综艺", "欧美综艺")
-    }
-    private val listTitle2_5 by lazy {
-        arrayListOf("类型", "记录片")
-    }
-    private val listTitle3 by lazy {
-        arrayListOf(
-            "地区",
-            "大陆",
-            "香港",
-            "台湾",
-            "日本",
-            "韩国",
-            "美国",
-            "英国",
-            "法国",
-            "泰国",
-            "印度"
-        )
     }
 
     private fun initView() {
@@ -491,83 +221,6 @@ class MovieListLittleActivity : AppCompatActivity() {
         adapter1.setList(list1)
     }
 
-//    private val list2_1 by lazy {
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle2_1.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 2
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        list1
-//    }
-//    private val list2_2 by lazy {
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle2_2.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 2
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        list1
-//    }
-//    private val list2_3 by lazy {
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle2_3.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 2
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        list1
-//    }
-//    private val list2_4 by lazy {
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle2_4.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 2
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        list1
-//    }
-//    private val list2_5 by lazy {
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle2_5.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 2
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        list1
-//    }
-
-//    private fun initView2() {
-//        binding.recycler2.adapter = adapter2
-//        binding.recycler2.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-//        adapter2.setList(list2_1)
-//    }
-
-
-//    private fun initView3() {
-//        binding.recycler3.adapter = adapter3
-//        binding.recycler3.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-//        val list1 = arrayListOf<MovieListBean>()
-//        listTitle3.forEachIndexed { index, s ->
-//            val listBean = MovieListBean()
-//            listBean.type = 3
-//            listBean.name = s
-//            listBean.id = index
-//            list1.add(listBean)
-//        }
-//        adapter3.setList(list1)
-//    }
-
     private fun initView4() {
         binding.recycler4.adapter = adapter4
         binding.recycler4.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
@@ -594,7 +247,7 @@ class MovieListLittleActivity : AppCompatActivity() {
         Log.d(TAG, "queryMovieList: yearModle=$yearModle,")
         val bean = MovieListLittleRequest()
         bean.pg = pg
-        bean.rank = rank
+        bean.littleType = littleType
         bean.yearModle = yearModle
         HttpClient.instance.getServer(NetApi::class.java)
             .queryMovieListLittle(bean)

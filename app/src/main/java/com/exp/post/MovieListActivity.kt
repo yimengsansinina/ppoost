@@ -361,7 +361,6 @@ class MovieListActivity : AppCompatActivity() {
             adapter.addData(list!!)
         } else {
             adapter.setList(list)
-
         }
         if (loadMore) {
             if (noMore) {
@@ -402,7 +401,6 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private val listTitle1 by lazy {
-//        arrayListOf("全部", "电影", "电视剧", "动漫", "综艺", "记录片")
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("all", "mo", "tv", "dm", "zy", "record")
         } else {
@@ -416,21 +414,10 @@ class MovieListActivity : AppCompatActivity() {
         for (index in year downTo 2009) {
             list.add(index.toString())
         }
-        list.add("更早")
+        list.add("之前")
         list
     }
     private val listTitle2_1 by lazy {
-//        arrayListOf(
-//            "类型",
-//            "动作片",
-//            "喜剧片",
-//            "爱情片",
-//            "科幻片",
-//            "恐怖片",
-//            "剧情片",
-//            "战争片",
-//            "动画片"
-//        )
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("all", "dz", "xj", "love", "kh", "kb","jq","zz","dh")
         } else {
@@ -439,17 +426,6 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val listTitle2_2 by lazy {
-//        arrayListOf(
-//            "类型",
-//            "国产剧",
-//            "香港剧",
-//            "台湾剧",
-//            "日本剧",
-//            "韩国剧",
-//            "欧美剧",
-//            "泰国剧",
-//            "海外剧"
-//        )
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("all", "gc", "xg", "tw", "rb", "hj","om","tg","hw")
         } else {
@@ -459,7 +435,6 @@ class MovieListActivity : AppCompatActivity() {
     }
 
     private val listTitle2_3 by lazy {
-//        arrayListOf("类型", "国产动漫", "日韩动漫", "欧美动漫", "港台动漫", "海外动漫")
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("all", "gcdm", "rhdm", "omdm", "gtdm","hwdm")
         } else {
@@ -468,7 +443,6 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val listTitle2_4 by lazy {
-//        arrayListOf("类型", "大陆综艺", "港台综艺", "日韩综艺", "欧美综艺")
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("all", "dlzy", "gtzy", "rhzy", "omzy")
         } else {
@@ -477,7 +451,6 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val listTitle2_5 by lazy {
-//        arrayListOf("类型", "记录片")
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("lx", "jlp")
         } else {
@@ -486,19 +459,6 @@ class MovieListActivity : AppCompatActivity() {
         }
     }
     private val listTitle3 by lazy {
-//        arrayListOf(
-//            "地区",
-//            "大陆",
-//            "香港",
-//            "台湾",
-//            "日本",
-//            "韩国",
-//            "美国",
-//            "英国",
-//            "法国",
-//            "泰国",
-//            "印度"
-//        )
         if (SPTools.getListInfoTextArr().isEmpty()) {
             arrayListOf("dq", "dl", "xg", "tw", "rb","hg","mg","yg","fg","tg","yd")
         } else {

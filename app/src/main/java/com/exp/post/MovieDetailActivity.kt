@@ -8,16 +8,13 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.jzvd.JZUtils
 import cn.jzvd.Jzvd
-import cn.jzvd.JzvdStd
 import com.exp.post.adapter.EPAdapter
 import com.exp.post.adapter.RouteAdapter
 import com.exp.post.bean.EpBean
@@ -178,6 +175,7 @@ class MovieDetailActivity : AppCompatActivity() {
             return
         }
         val playList = mMovie!!.playList
+        Log.d(TAG, "initRecycler() playList=$playList")
         if (playList.isNullOrEmpty()) {
             return
         }
@@ -187,6 +185,13 @@ class MovieDetailActivity : AppCompatActivity() {
                 routeList.add(index)
             }
         }
+        if (!routeList.contains(mCurrentRouteIndex)) {
+            if (routeList.isNotEmpty()){
+                mCurrentRouteIndex=routeList[0]
+            }
+        }
+
+        Log.d(TAG, "initRecycler: routeList=$routeList")
         initRouteRv()
         val bean = initEpRv()
         bean?.run {
@@ -286,11 +291,7 @@ class MovieDetailActivity : AppCompatActivity() {
         binding.routeRecyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.routeRecyclerView.adapter = routeAdapter
-        if (mCurrentRouteIndex <= routeList.size - 1 && mCurrentRouteIndex >= 0) {
-            routeAdapter.checkPos = mCurrentRouteIndex
-        } else {
-            mCurrentRouteIndex = 0
-        }
+        routeAdapter.checkIndex = mCurrentRouteIndex
         routeAdapter.setList(routeList)
     }
 
@@ -303,7 +304,7 @@ class MovieDetailActivity : AppCompatActivity() {
         }
         val list = arrayListOf<EpBean>()
         for (urlF in arr) {
-            val arr = urlF.split("$")
+            val arr = urlF.split("@@@")
             if (arr.isNullOrEmpty() || arr.size != 2) {
                 continue
             }
