@@ -153,9 +153,11 @@ class SearchActivity : AppCompatActivity() {
     private fun initView() {
         binding.clearHistory.setOnClickListener {
             HistoryWordUtils.deleteAll()
+
         }
         binding.tagGroup.setOnTagClickListener {
             binding.recyclerView.visibility = View.VISIBLE
+            binding.searchEt.setText(it)
             postNet(it, false)
             insertHistory(it)
         }
