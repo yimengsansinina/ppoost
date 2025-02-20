@@ -1,20 +1,20 @@
 package com.exp.post
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.jzvd.Jzvd
+import com.bumptech.glide.Glide
 import com.exp.post.adapter.EPAdapter
 import com.exp.post.adapter.RouteAdapter
 import com.exp.post.bean.EpBean
@@ -27,8 +27,11 @@ import com.exp.post.dbs.PageBean
 import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.tools.GradleItemDecord
-import com.exp.post.wt.MJzvd
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail
+import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
+import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
+import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -38,8 +41,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Calendar
 
-
-class MovieDetailActivity : AppCompatActivity() {
+class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
 
     private var disposable: Disposable? = null
     private lateinit var binding: ActivityMovieDetailBinding
@@ -66,35 +68,43 @@ class MovieDetailActivity : AppCompatActivity() {
         }
     }
 
-
-    private val mVideoView by lazy { findViewById<MJzvd>(R.id.jz_video)!! }
+    private lateinit var detailPlayer: StandardGSYVideoPlayer
     private fun initView() {
         if (mId == 0L) {
             return
         }
-        mVideoView.setPreparedListener(object : MJzvd.IPreparedListener {
-            override fun onPrepared() {
-                Log.d(TAG, "onPrepared() called,mCurrentProgress=$mCurrentProgress")
-                mVideoView.mediaInterface.seekTo(mCurrentProgress)
+//        CacheFactory.setCacheManager(ExoPlayerCacheManager());//exo缓存模式，支持m3u8，只支持exo
+        //11
+        detailPlayer = findViewById(R.id.detail_player);
+        //增加title
+        detailPlayer.getTitleTextView().setVisibility(View.GONE);
+        detailPlayer.getBackButton().setVisibility(View.GONE);
+
+        // 方式1：使用 GSYSampleCallBack
+        detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
+            override fun onPlayError(url: String?, vararg objects: Any?) {
+                // 播放错误回调
+                Toast.makeText(this@MovieDetailActivity, "播放错误", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onFinish() {
+            override fun onAutoComplete(url: String?, vararg objects: Any?) {
+                // 播放完成回调
+                Toast.makeText(this@MovieDetailActivity, "播放完成", Toast.LENGTH_SHORT).show()
                 //播放下一個
                 playNext()
                 Log.d(TAG, "onFinish: ")
+            }
+
+            override fun onPrepared(url: String?, vararg objects: Any?) {
+                // 准备完成回调
+                super.onPrepared(url, *objects)
+
             }
         })
         binding.backTiny.setOnClickListener {
             finish()
         }
         requestMovie()
-//        val jzvdStd: JzvdStd = findViewById<View>(R.id.jz_video) as JzvdStd
-//        jzvdStd.setUp(
-//            "https://s5.bfengbf.com/video/tunxiayuzhoudenanhai/第05集/index.m3u8",
-//            "饺子闭眼睛"
-//        )
-//        jzvdStd.posterImageView.setImageURI(Uri.parse("http://p.qpic.cn/videoyun/0/2449_43b6f696980311e59ed467f22794e792_1/640"))
-
     }
 
     private fun playNext() {
@@ -191,23 +201,24 @@ class MovieDetailActivity : AppCompatActivity() {
                 mCurrentRouteIndex = routeIndexList[0]
             }
         }
-
         Log.d(TAG, "initRecycler: routeList=$routeIndexList")
         initRouteRv()
         val bean = initEpRv()
         bean?.run {
             val sec = mMovie?.historyProgress ?: 0L
             Log.d(TAG, "initRecycler: sec=$sec")
+            mFirstEpBean = this
+            initVideoBuilderMode()
             clickEp(this, sec)
         }
     }
 
+    private var mFirstEpBean: EpBean? = null
     private fun initEpRv(): EpBean? {
         val epBean = routeMap[mCurrentRouteIndex]
         if (epBean == null) {
             return null
         }
-
         binding.recyclerView.layoutManager =
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         binding.recyclerView.adapter = epAdapter
@@ -234,9 +245,6 @@ class MovieDetailActivity : AppCompatActivity() {
         if (routeIndex == mCurrentRouteIndex) {
             return
         }
-//        if (pos > routeMap.size - 1 || pos < 0) {
-//            return
-//        }
         val epBeans = routeMap[routeIndex]
         if (epBeans == null) {
             return
@@ -251,13 +259,13 @@ class MovieDetailActivity : AppCompatActivity() {
         //
         if (mCurrentEpIndex >= 0 && mCurrentEpIndex < epBeans.size) {
             val epBean = epBeans[mCurrentEpIndex]
-            clickEp(epBean, mVideoView.currentPositionWhenPlaying)
+            clickEp(epBean, detailPlayer.currentPositionWhenPlaying)
             epAdapter.checkPos = mCurrentEpIndex
             epAdapter.notifyDataSetChanged()
         } else {
             mCurrentEpIndex = 0
             val epBean = epBeans[0]
-            clickEp(epBean, mVideoView.currentPositionWhenPlaying)
+            clickEp(epBean, detailPlayer.currentPositionWhenPlaying)
             epAdapter.checkPos = 0
             epAdapter.notifyDataSetChanged()
         }
@@ -276,12 +284,20 @@ class MovieDetailActivity : AppCompatActivity() {
     private fun clickEp(epBean: EpBean, playTime: Long) {
         mCurrentProgress = playTime
         Log.d(TAG, "clickEp: setUp=${epBean.epUrl}")
-        mVideoView.setUp(
-            epBean.epUrl,
+        detailPlayer.setUp(
+            epBean.epUrl, true,
             epBean.name + "," + epBean.epName
         )
-        mVideoView.posterImageView.setImageURI(Uri.parse(epBean.cover))
-        mVideoView.startVideo()
+        detailPlayer.seekOnStart = playTime * 1000 // 设置开始位置
+        detailPlayer.startAfterPrepared() // 准备完成后自动开始播放
+        detailPlayer.startPlayLogic()
+
+        // 方式2：使用Glide加载网络图片
+        val coverImageView = ImageView(this)
+        Glide.with(this)
+            .load(epBean.cover)
+            .into(coverImageView)
+        detailPlayer.thumbImageView = coverImageView
     }
 
     //route索引
@@ -320,11 +336,38 @@ class MovieDetailActivity : AppCompatActivity() {
         routeMap[index] = list
     }
 
-    override fun onBackPressed() {
-        if (Jzvd.backPress()) {
-            return
-        }
-        super.onBackPressed()
+
+    override fun getGSYVideoPlayer(): StandardGSYVideoPlayer {
+        return detailPlayer
+    }
+
+    override fun getGSYVideoOptionBuilder(): GSYVideoOptionBuilder {
+        return GSYVideoOptionBuilder()
+            .setIsTouchWiget(true)
+            .setRotateViewAuto(false)
+            .setLockLand(false)
+            .setShowFullAnimation(false)
+            .setNeedLockFull(true)
+//            .setSeekRatio(1f)
+            // .setIsTouchWiget(true)                    // 是否支持手势操作
+            //        .setRotateViewAuto(false)                 // 是否开启自动旋转
+            //        .setLockLand(false)                       // 是否一直横屏
+//                .setShowFullAnimation(false)              // 是否显示全屏动画
+//                .setNeedLockFull(true)                    // 是否需要全屏锁定
+            //        .setSeekRatio(1f)                         // 设置滑动快进的比例
+            //        .setVideoAllCallBack(videoCallBack)       // 设置播放器回调
+//                .setLooping(false)                        // 是否循环播放
+            //        .setAutoFullWithSize(true)                // 是否根据视频尺寸自动确定全屏
+            .setDismissControlTime(5000)              // 控制器隐藏时间
+//                .setShowPauseCover(true)                  // 是否显示暂停时的封面
+        //        .setRotateWithSystem(false)
+    }
+
+    override fun clickForFullScreen() {
+    }
+
+    override fun getDetailOrientationRotateAuto(): Boolean {
+        return false
     }
 
     private fun convert(pageBean: PageBean): HistoryPageBean {
@@ -340,7 +383,7 @@ class MovieDetailActivity : AppCompatActivity() {
         super.onPause()
         //
         if (mMovie != null) {
-            val progress = mVideoView.getCurrentPositionWhenPlaying()
+            val progress = detailPlayer.getCurrentPositionWhenPlaying()
             Log.d(TAG, "onPause: progress=$progress")
             mMovie?.let {
                 val historyPageBean = convert(it)
@@ -353,7 +396,6 @@ class MovieDetailActivity : AppCompatActivity() {
                 HistoryUtils.insert(historyPageBean)
             }
         }
-        Jzvd.releaseAllVideos()
     }
 
 
@@ -483,7 +525,7 @@ class MovieDetailActivity : AppCompatActivity() {
             }
             mCurrentEpIndex = position
             clickEp(item, 0)
-            epAdapter.checkPos=mCurrentEpIndex
+            epAdapter.checkPos = mCurrentEpIndex
             epAdapter.notifyDataSetChanged()
         }
 
@@ -492,7 +534,7 @@ class MovieDetailActivity : AppCompatActivity() {
             adapter = adapter1
             addItemDecoration(GradleItemDecord())
         }
-        adapter1.selectedPosition=mCurrentEpIndex
+        adapter1.selectedPosition = mCurrentEpIndex
         // 生成集数列表
         val epBean = routeMap[mCurrentRouteIndex]
         epBean?.let { adapter1.updateData(it) }

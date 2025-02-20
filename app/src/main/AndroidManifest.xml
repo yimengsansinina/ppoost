@@ -26,8 +26,9 @@
         </activity>
         <activity
             android:name=".MovieDetailActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.SearchActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"

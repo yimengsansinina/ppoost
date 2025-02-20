@@ -69,7 +69,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.ogaclejapan.smarttablayout:library:2.0.0@aar")
     implementation ("com.ogaclejapan.smarttablayout:utils-v4:2.0.0@aar")
-    implementation ("cn.jzvd:jiaozivideoplayer:7.7.0")
+//    implementation ("cn.jzvd:jiaozivideoplayer:7.7.0")
     implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
     implementation ("com.google.android.exoplayer:exoplayer-hls:2.19.1")
@@ -97,5 +97,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 //    implementation("io.objectbox:objectbox-gradle-plugin:4.0.0")
+    //完整版引入
 
+    implementation ("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer:v10.0.0")
+
+
+    //是否需要AliPlayer模式
+    implementation ("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-aliplay:v10.0.0")
 }
