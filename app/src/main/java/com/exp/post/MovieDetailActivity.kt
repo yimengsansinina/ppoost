@@ -46,13 +46,10 @@ import retrofit2.Response
 import java.util.Calendar
 
 class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
-
     private var disposable: Disposable? = null
     private lateinit var binding: ActivityMovieDetailBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
@@ -62,7 +59,6 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
     private val mId by lazy {
         intent?.getLongExtra("id", 0) ?: 0
     }
-
     companion object {
         const val TAG = "MovieDetailActivity"
         fun nav(activity: AppCompatActivity, id: Long) {
