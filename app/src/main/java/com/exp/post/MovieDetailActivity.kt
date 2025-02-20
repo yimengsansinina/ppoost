@@ -145,21 +145,27 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
         })
 
         // 方式1：使用 GSYSampleCallBack
-        detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
-            override fun onPlayError(url: String?, vararg objects: Any?) {
-                // 播放错误回调
-                Toast.makeText(this@MovieDetailActivity, "播放错误", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onAutoComplete(url: String?, vararg objects: Any?) {
-                // 播放完成回调
-                Toast.makeText(this@MovieDetailActivity, "播放完成", Toast.LENGTH_SHORT).show()
-                //播放下一個
-                playNext()
-                Log.d(TAG, "onFinish: ")
-            }
-
-        })
+//        detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
+//            override fun onPlayError(url: String?, vararg objects: Any?) {
+//                // 播放错误回调
+//                Toast.makeText(this@MovieDetailActivity, "播放错误", Toast.LENGTH_SHORT).show()
+//            }
+//
+//            override fun onAutoComplete(url: String?, vararg objects: Any?) {
+//                // 播放完成回调
+//                Toast.makeText(this@MovieDetailActivity, "播放完成", Toast.LENGTH_SHORT).show()
+//                //播放下一個
+//                playNext()
+//                Log.d(TAG, "onAutoComplete: ")
+//            }
+//
+//            override fun onComplete(url: String?, vararg objects: Any?) {
+//                super.onComplete(url, *objects)
+//                playNext()
+//                Log.d(TAG, "onComplete: ")
+//            }
+//
+//        })
         binding.backTiny.setOnClickListener {
             finish()
         }
@@ -355,6 +361,13 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
                 // 在准备完成后跳转
                 detailPlayer.seekTo(playTime)
                 detailPlayer.startAfterPrepared() // 准备完成后自动开始播放
+            }
+            override fun onAutoComplete(url: String?, vararg objects: Any?) {
+                // 播放完成回调
+                Toast.makeText(this@MovieDetailActivity, "播放完成", Toast.LENGTH_SHORT).show()
+                //播放下一個
+                playNext()
+                Log.d(TAG, "onAutoComplete: ")
             }
         })
 //        detailPlayer.seekTo(playTime)
