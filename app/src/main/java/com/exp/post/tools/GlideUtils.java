@@ -16,8 +16,8 @@ public class GlideUtils {
                 .load(url)
                 .apply(new RequestOptions()
                         .diskCacheStrategy(DiskCacheStrategy.ALL) // 缓存策略
-                        .placeholder(R.drawable.ic_notifications_black_24dp) // 占位符
-                        .error(R.drawable.ic_notifications_black_24dp)) // 错误图像
+                        .placeholder(R.drawable.video_default) // 占位符
+                        .error(R.drawable.video_default)) // 错误图像
                 .into(imageView);
     }
     public static void loadImageCenterCrop(Context context, String url, ImageView imageView) {
@@ -26,8 +26,8 @@ public class GlideUtils {
                 .apply(new RequestOptions()
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL) // 缓存策略
-                        .placeholder(R.drawable.ic_notifications_black_24dp) // 占位符
-                        .error(R.drawable.ic_notifications_black_24dp)) // 错误图像
+                        .placeholder(R.drawable.video_default) // 占位符
+                        .error(R.drawable.video_default)) // 错误图像
                 .into(imageView);
     }
 
@@ -38,8 +38,8 @@ public class GlideUtils {
                 .apply(new RequestOptions()
                         .circleCrop() // 圆形裁剪
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.drawable.ic_notifications_black_24dp)
-                        .error(R.drawable.ic_notifications_black_24dp))
+                        .placeholder(R.drawable.video_default)
+                        .error(R.drawable.video_default))
                 .into(imageView);
     }
 
@@ -50,8 +50,8 @@ public class GlideUtils {
                 .apply(new RequestOptions()
                         .skipMemoryCache(true) // 禁用内存缓存
                         .diskCacheStrategy(DiskCacheStrategy.NONE) // 禁用磁盘缓存
-                        .placeholder(R.drawable.ic_notifications_black_24dp)
-                        .error(R.drawable.ic_notifications_black_24dp))
+                        .placeholder(R.drawable.video_default)
+                        .error(R.drawable.video_default))
                 .into(imageView);
     }
 
@@ -62,8 +62,8 @@ public class GlideUtils {
                 .apply(new RequestOptions()
                         .override(width, height) // 指定尺寸
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.drawable.ic_notifications_black_24dp)
-                        .error(R.drawable.ic_notifications_black_24dp))
+                        .placeholder(R.drawable.video_default)
+                        .error(R.drawable.video_default))
                 .into(imageView);
     }
 }
