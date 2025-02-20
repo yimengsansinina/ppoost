@@ -2,10 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="55dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/drawable_ep_unselected"
-    android:id="@+id/constraint"
-  >
+    android:id="@+id/constraint">
 
     <TextView
         android:text="fsfs"
@@ -21,14 +20,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="4dp"
         android:layout_marginEnd="4dp"
         android:layout_marginTop="2dp"
         android:id="@+id/tvPlaying"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="播放中"
-        android:textColor="#2196F3"
-        android:textSize="6dp"
+        android:textColor="@color/puc61a01"
+        android:textSize="7dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEpisode" />

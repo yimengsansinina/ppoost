@@ -400,13 +400,13 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
     private val routeMap = HashMap<Int, List<EpBean>>()
     private fun fetchBeanList(index: Int, playUrl: String) {
         val arr = playUrl.split("\r\n")
-        if (arr.isNullOrEmpty()) {
+        if (arr.isEmpty()) {
             return
         }
         val list = arrayListOf<EpBean>()
         for (urlF in arr) {
             val arr = urlF.split("@@@")
-            if (arr.isNullOrEmpty() || arr.size != 2) {
+            if (arr.isEmpty() || arr.size != 2) {
                 continue
             }
             val bean = EpBean()
@@ -467,7 +467,7 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
         super.onPause()
         //
         if (mMovie != null) {
-            val progress = detailPlayer.getCurrentPositionWhenPlaying()
+            val progress = detailPlayer.currentPositionWhenPlaying
             Log.d(TAG, "onPause: progress=$progress")
             mMovie?.let {
                 val historyPageBean = convert(it)
@@ -514,7 +514,7 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
                 { data ->
                     ok(data)
                 }
-            ) { throwable ->
+            ) { _ ->
                 // 处理错误
                 ok(null)
             }

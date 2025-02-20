@@ -47,14 +47,17 @@
         app:layout_constraintStart_toEndOf="@id/viewpagertab"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/search_fl"
-        android:padding="10dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <View
             android:background="@drawable/ic_search"
             android:id="@+id/search_view"
-            android:layout_width="25dp"
-            android:layout_height="25dp"/>
+            android:layout_width="27dp"
+            android:layout_height="27dp"/>
     </FrameLayout>
 
     <androidx.viewpager.widget.ViewPager

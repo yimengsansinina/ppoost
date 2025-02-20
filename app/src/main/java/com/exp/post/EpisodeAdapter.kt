@@ -1,4 +1,5 @@
 package com.exp.post
+
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,8 @@ import com.exp.post.bean.EpBean
 import com.exp.post.tools.AndroidUtils
 
 class EpisodeAdapter(
-     var selectedPosition: Int = -1,
-    private val onItemClick: (Int,EpBean) -> Unit
+    var selectedPosition: Int = -1,
+    private val onItemClick: (Int, EpBean) -> Unit
 ) : RecyclerView.Adapter<EpisodeAdapter.ViewHolder>() {
 
     private val episodes = mutableListOf<EpBean>()
@@ -37,8 +38,11 @@ class EpisodeAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val phoneW = AndroidUtils.phoneW()
-        val with = (phoneW - AndroidUtils.dp2px(13*12f)) / 4
-        Log.d("EpisodeAdapter", "onBindViewHolder() called with: with = $with, position = $position")
+        val with = (phoneW - AndroidUtils.dp2px(13 * 6f)) / 5
+        Log.d(
+            "EpisodeAdapter",
+            "onBindViewHolder() called with: with = $with, position = $position"
+        )
         val view = holder.itemView.findViewById<ConstraintLayout>(R.id.constraint)
         val layoutParams = view.layoutParams
         layoutParams.width = with
@@ -58,25 +62,21 @@ class EpisodeAdapter(
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     updateSelected(position)
-                    onItemClick(position,episodes[position])
+                    onItemClick(position, episodes[position])
                 }
             }
         }
 
         fun bind(episode: EpBean, isSelected: Boolean) {
             tvEpisode.text = episode.epName
-            tvPlaying.visibility = if (isSelected) View.VISIBLE else View.GONE
-            if (isSelected){
+            tvPlaying.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
+            if (isSelected) {
                 constraint.setBackgroundResource(R.drawable.drawable_ep_selected)
-            }else{
+                tvEpisode.setTextColor(tvEpisode.context.getColor(R.color.puc61a01))
+            } else {
+                tvEpisode.setTextColor(tvEpisode.context.getColor(R.color.black))
                 constraint.setBackgroundResource(R.drawable.drawable_ep_unselected)
             }
-//            cardView.setCardBackgroundColor(
-//                if (isSelected)
-//                    Color.parseColor("#E3F2FD")
-//                else
-//                    Color.parseColor("#F5F5F5")
-//            )
         }
     }
 } 
