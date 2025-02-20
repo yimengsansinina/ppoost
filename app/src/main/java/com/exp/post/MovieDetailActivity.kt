@@ -7,6 +7,8 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -69,16 +71,78 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
     }
 
     private lateinit var detailPlayer: StandardGSYVideoPlayer
+    private lateinit var speedControlLayout: Button
+    interface OnVisibilityChangeListener {
+        fun onVisibilityChanged(visible: Boolean)
+    }
+    private fun setVisibilityListener(view: View, listener: OnVisibilityChangeListener) {
+        view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            private var lastVisibility = view.visibility
+            override fun onViewAttachedToWindow(v: View) {
+                v.viewTreeObserver.addOnGlobalLayoutListener {
+                    val newVisibility = v.visibility
+                    if (newVisibility != lastVisibility) {
+                        lastVisibility = newVisibility
+                        listener.onVisibilityChanged(newVisibility == View.VISIBLE)
+                    }
+                }
+            }
+            override fun onViewDetachedFromWindow(v: View) {}
+        })
+    }
+
+    private var currentSpeed = 1.0f
+
+    // 切换倍速
+    private fun changeSpeed() {
+        detailPlayer.restartTimerTask()
+        if (currentSpeed === 1.0f) {
+            currentSpeed = 1.5f
+        } else if (currentSpeed === 1.5f) {
+            currentSpeed = 2.0f
+        } else if (currentSpeed === 2.0f) {
+            currentSpeed = 3.0f
+        } else {
+            currentSpeed = 1.0f
+        }
+        // 修改按钮文本
+        speedControlLayout?.setText("" + currentSpeed + "x")
+        // 设置播放速度
+        detailPlayer.setSpeed(currentSpeed, false)
+    }
+
     private fun initView() {
         if (mId == 0L) {
             return
         }
 //        CacheFactory.setCacheManager(ExoPlayerCacheManager());//exo缓存模式，支持m3u8，只支持exo
         //11
-        detailPlayer = findViewById(R.id.detail_player);
+        detailPlayer = findViewById(R.id.detail_player)
+        speedControlLayout = detailPlayer.findViewById<Button>(R.id.btn_speed)
+        speedControlLayout.setOnClickListener {
+            Log.d(TAG, "initView() speedControlLayout called")
+            changeSpeed()
+        }
         //增加title
-        detailPlayer.getTitleTextView().setVisibility(View.GONE);
+//        detailPlayer.getTitleTextView().setVisibility(View.GONE);
         detailPlayer.getBackButton().setVisibility(View.GONE);
+
+        // 将按钮添加到播放器控制层
+        // 获取底部控制栏
+        val bottomContainer =
+            detailPlayer.findViewById<ViewGroup>(com.shuyu.gsyvideoplayer.R.id.layout_bottom)
+//        bottomContainer.addView(speedButton)
+        setVisibilityListener(bottomContainer, object : OnVisibilityChangeListener {
+            override fun onVisibilityChanged(visible: Boolean) {
+                if (visible) {
+                    speedControlLayout.visibility = View.VISIBLE
+                } else {
+                    speedControlLayout.visibility = View.GONE
+                }
+                Log.d(TAG, "onVisibilityChanged() called with: visible = $visible")
+            }
+
+        })
 
         // 方式1：使用 GSYSampleCallBack
         detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
@@ -95,17 +159,13 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
                 Log.d(TAG, "onFinish: ")
             }
 
-            override fun onPrepared(url: String?, vararg objects: Any?) {
-                // 准备完成回调
-                super.onPrepared(url, *objects)
-
-            }
         })
         binding.backTiny.setOnClickListener {
             finish()
         }
         requestMovie()
     }
+
 
     private fun playNext() {
         val currentPos = epAdapter.checkPos + 1
