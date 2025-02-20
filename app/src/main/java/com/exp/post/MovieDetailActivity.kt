@@ -12,7 +12,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.ContentLoadingProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,9 +74,11 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
 
     private lateinit var detailPlayer: StandardGSYVideoPlayer
     private lateinit var speedControlLayout: Button
+
     interface OnVisibilityChangeListener {
         fun onVisibilityChanged(visible: Boolean)
     }
+
     private fun setVisibilityListener(view: View, listener: OnVisibilityChangeListener) {
         view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             private var lastVisibility = view.visibility
@@ -87,6 +91,7 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
                     }
                 }
             }
+
             override fun onViewDetachedFromWindow(v: View) {}
         })
     }
@@ -111,10 +116,12 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
         detailPlayer.setSpeed(currentSpeed, false)
     }
 
+    private var progressBar: ContentLoadingProgressBar? = null
     private fun initView() {
         if (mId == 0L) {
             return
         }
+        progressBar = findViewById(R.id.progress_bar)
 //        CacheFactory.setCacheManager(ExoPlayerCacheManager());//exo缓存模式，支持m3u8，只支持exo
         //11
         detailPlayer = findViewById(R.id.detail_player)
@@ -143,29 +150,6 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
             }
 
         })
-
-        // 方式1：使用 GSYSampleCallBack
-//        detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
-//            override fun onPlayError(url: String?, vararg objects: Any?) {
-//                // 播放错误回调
-//                Toast.makeText(this@MovieDetailActivity, "播放错误", Toast.LENGTH_SHORT).show()
-//            }
-//
-//            override fun onAutoComplete(url: String?, vararg objects: Any?) {
-//                // 播放完成回调
-//                Toast.makeText(this@MovieDetailActivity, "播放完成", Toast.LENGTH_SHORT).show()
-//                //播放下一個
-//                playNext()
-//                Log.d(TAG, "onAutoComplete: ")
-//            }
-//
-//            override fun onComplete(url: String?, vararg objects: Any?) {
-//                super.onComplete(url, *objects)
-//                playNext()
-//                Log.d(TAG, "onComplete: ")
-//            }
-//
-//        })
         binding.backTiny.setOnClickListener {
             finish()
         }
@@ -231,7 +215,9 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
             Log.d(TAG, "requestMovie: getFromHistory=${history?.historyProgress}")
             mCurrentRouteIndex = history?.historySource ?: 0
             mCurrentEpIndex = history?.historyEpIndex ?: 0
+            progressBar?.show()
             queryMovieList(mId, {
+                progressBar?.hide()
                 it.historyProgress = history?.historyProgress ?: 0L
                 it.historySource = history?.historySource ?: 0
                 it.historyEpIndex = history?.historyEpIndex ?: 0
@@ -239,12 +225,27 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
                 Log.d(TAG, "requestMovie: mMovie=$mMovie")
                 initMovieUI()
                 initRecycler()
-//                startPlay()
             }, {
-                //todo
+                progressBar?.hide()
+                showErrDialog()
             })
         }
     }
+
+    private fun showErrDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("提示")
+            .setMessage("网络出现了小故障,请重试吧")
+            .setNegativeButton("取消"){dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton("确定") { dialog, _ ->
+                requestMovie()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
 
     private fun initRecycler() {
         if (mMovie == null) {
@@ -373,7 +374,6 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
 //        detailPlayer.seekTo(playTime)
 //        detailPlayer.seekOnStart = playTime // 设置开始位置
         detailPlayer.startPlayLogic()
-
 
 
         // 方式2：使用Glide加载网络图片
