@@ -342,15 +342,26 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
     }
 
     private fun clickEp(epBean: EpBean, playTime: Long) {
+        Log.d(TAG, "clickEp() called with: epBean = $epBean, playTime = $playTime")
         mCurrentProgress = playTime
         Log.d(TAG, "clickEp: setUp=${epBean.epUrl}")
         detailPlayer.setUp(
             epBean.epUrl, true,
             epBean.name + "," + epBean.epName
         )
-        detailPlayer.seekOnStart = playTime * 1000 // 设置开始位置
-        detailPlayer.startAfterPrepared() // 准备完成后自动开始播放
+        // 添加准备完成的监听
+        detailPlayer.setVideoAllCallBack(object : GSYSampleCallBack() {
+            override fun onPrepared(url: String?, vararg objects: Any?) {
+                // 在准备完成后跳转
+                detailPlayer.seekTo(playTime)
+                detailPlayer.startAfterPrepared() // 准备完成后自动开始播放
+            }
+        })
+//        detailPlayer.seekTo(playTime)
+//        detailPlayer.seekOnStart = playTime // 设置开始位置
         detailPlayer.startPlayLogic()
+
+
 
         // 方式2：使用Glide加载网络图片
         val coverImageView = ImageView(this)
