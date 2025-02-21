@@ -32,6 +32,7 @@ import com.exp.post.net.HttpClient
 import com.exp.post.net.NetApi
 import com.exp.post.tools.GradleItemDecord
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.jaeger.library.StatusBarUtil
 import com.shuyu.gsyvideoplayer.GSYBaseActivityDetail
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
@@ -52,6 +53,8 @@ class MovieDetailActivity : GSYBaseActivityDetail<StandardGSYVideoPlayer>() {
         super.onCreate(savedInstanceState)
         binding = ActivityMovieDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, null)
+        StatusBarUtil.setLightMode(this)
         supportActionBar?.hide()
         initView()
     }
